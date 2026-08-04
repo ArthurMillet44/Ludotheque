@@ -20,3 +20,9 @@ Ces règles s'appliquent à tout le travail effectué sur ce projet.
 ## Fiabilité
 
 - Ne jamais inventer d'information dont on n'est pas sûr (API, comportement Supabase, structure de données, etc.). En cas de doute, poser la question plutôt que de supposer.
+
+## Architecture du code
+
+- Chaque fichier doit avoir sa propre responsabilité, et chaque fonction également.
+- Séparer au maximum le CSS, le HTML/JSX et le TypeScript dans des fichiers distincts.
+- Privilégier une architecture en composants quand cela a un intérêt.
