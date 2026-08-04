@@ -10,3 +10,5 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 ### Ajouté
 
 - Mise en place de la structure de base du projet : `README.md`, `CHANGELOG.md`, `.gitignore`, `.env` / `.env.example`, workflow CI GitHub Actions.
+- Ajout de la branche `develop` dans les déclencheurs de la CI.
+- Ajout de `CLAUDE.md` avec les règles de collaboration du projet
