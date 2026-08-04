@@ -14,3 +14,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Ajout de `CLAUDE.md` avec les règles de collaboration du projet
 - Ajout des règles d'architecture du code dans `CLAUDE.md` (responsabilité unique, séparation CSS/HTML/TS, architecture en composants)
 - Initialisation du projet frontend avec Vite, React et TypeScript
+- Page de connexion (UI uniquement) : logo, onglets connexion/inscription, champs email et mot de passe, sans logique métier ni appel réseau
