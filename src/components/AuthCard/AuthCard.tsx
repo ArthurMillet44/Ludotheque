@@ -44,7 +44,9 @@ export function AuthCard() {
           value={password}
           onChange={setPassword}
         />
-        <PrimaryButton type="submit">{SUBMIT_LABEL[mode]}</PrimaryButton>
+        <PrimaryButton type="submit" className="auth-card__submit">
+          {SUBMIT_LABEL[mode]}
+        </PrimaryButton>
       </form>
     </div>
   )
