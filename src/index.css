@@ -1,0 +1,67 @@
+:root {
+  --color-bg-glow: #1b2440;
+  --color-bg-base: #05070d;
+  --color-surface: #0e1320;
+  --color-surface-border: rgba(255, 255, 255, 0.08);
+  --color-tab-track: rgba(255, 255, 255, 0.04);
+  --color-tab-active: #05070d;
+  --color-input-bg: #0b0f1a;
+  --color-input-border: rgba(255, 255, 255, 0.14);
+  --color-input-border-focus: var(--color-accent);
+
+  --color-text-primary: #f5f5f2;
+  --color-text-secondary: #8b93a7;
+  --color-text-muted: #5b6478;
+
+  --color-accent: #f3a83d;
+  --color-accent-hover: #e6982a;
+  --color-accent-text: #1a1206;
+
+  --font-display: 'Anton', var(--font-body);
+  --font-body: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+
+  --transition-fast: 150ms ease-out;
+
+  color-scheme: dark;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  color: var(--color-text-primary);
+  background: radial-gradient(
+      circle at 50% 15%,
+      var(--color-bg-glow) 0%,
+      var(--color-bg-base) 65%
+    )
+    var(--color-bg-base);
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+button,
+input {
+  font-family: inherit;
+}
