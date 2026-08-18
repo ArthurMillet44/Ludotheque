@@ -19,3 +19,9 @@
 .auth-card__submit {
   margin-top: var(--space-3);
 }
+
+.auth-card__error {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-error);
+}

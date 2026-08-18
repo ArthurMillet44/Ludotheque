@@ -1,12 +1,18 @@
+import { Route, Routes } from 'react-router-dom'
 import { LoginPage } from './pages/LoginPage/LoginPage'
+import { AnimesPage } from './pages/AnimesPage/AnimesPage'
 
 /**
- * Composant racine de l'application. Affiche pour l'instant
- * uniquement la page de connexion, en attendant la mise en place
- * du routage entre les différentes pages.
+ * Composant racine de l'application, définissant les routes
+ * principales : la page de connexion et la page des animes.
  */
 function App() {
-  return <LoginPage />
+  return (
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/animes" element={<AnimesPage />} />
+    </Routes>
+  )
 }
 
 export default App
