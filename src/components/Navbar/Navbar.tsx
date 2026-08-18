@@ -38,6 +38,14 @@ export function Navbar() {
           >
             Pokémon
           </NavLink>
+          <NavLink
+            to="/skyrim"
+            className={({ isActive }) =>
+              isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            }
+          >
+            Skyrim
+          </NavLink>
         </nav>
       </div>
       <ProfileMenu />

@@ -38,3 +38,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Affichage des Pokémon capturés (`fetchPokemonCaptures`) sur la page de détail d'un jeu
 - Modification et suppression d'une capture, ligne par ligne, dans le tableau de la page de détail d'un jeu
 - Tri du tableau des captures par zone, Pokémon capturé ou statut, et barre de recherche sur la page de détail d'un jeu
+- Page Skyrim (`/skyrim`), lien "Skyrim" dans la `Navbar`
