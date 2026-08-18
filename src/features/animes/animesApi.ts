@@ -44,3 +44,21 @@ export async function fetchAnimes(): Promise<FetchAnimesResult> {
 
   return { animes, error: null }
 }
+
+/**
+ * Filtre une liste d'animes selon un texte recherché dans le titre,
+ * sans tenir compte de la casse. Renvoie la liste complète si la
+ * recherche est vide.
+ * @param animes liste d'animes à filtrer
+ * @param query texte recherché
+ * @returns les animes dont le titre contient le texte recherché
+ */
+export function filterAnimesByTitle(animes: Anime[], query: string): Anime[] {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  if (!normalizedQuery) {
+    return animes
+  }
+
+  return animes.filter((anime) => anime.title.toLowerCase().includes(normalizedQuery))
+}

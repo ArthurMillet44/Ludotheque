@@ -1,20 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Navbar } from '../../components/Navbar/Navbar'
 import { AnimeTable } from '../../components/AnimeTable/AnimeTable'
 import { EmptyState } from '../../components/EmptyState/EmptyState'
-import { fetchAnimes, type Anime } from '../../features/animes/animesApi'
+import { SearchBar } from '../../components/SearchBar/SearchBar'
+import { fetchAnimes, filterAnimesByTitle, type Anime } from '../../features/animes/animesApi'
 import './AnimesPage.css'
 
 /**
  * Page listant les animes de l'utilisateur connecté. Récupère la liste
- * depuis Supabase au chargement de la page, et affiche selon le cas un
- * indicateur de chargement, un message d'erreur, un message si la
- * liste est vide, ou le tableau des animes.
+ * depuis Supabase au chargement de la page, permet de la filtrer par
+ * titre, et affiche selon le cas un indicateur de chargement, un
+ * message d'erreur, un message si la liste (ou le résultat de la
+ * recherche) est vide, ou le tableau des animes.
  */
 export function AnimesPage() {
   const [animes, setAnimes] = useState<Anime[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     let isMounted = true
@@ -42,11 +45,24 @@ export function AnimesPage() {
     }
   }, [])
 
+  const filteredAnimes = useMemo(
+    () => filterAnimesByTitle(animes, searchQuery),
+    [animes, searchQuery],
+  )
+
   return (
     <div className="animes-page">
       <Navbar />
       <main className="animes-page__content">
         <h1 className="animes-page__title">Animes</h1>
+        {!isLoading && !errorMessage && animes.length > 0 && (
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Rechercher un anime..."
+            ariaLabel="Rechercher un anime par titre"
+          />
+        )}
         {isLoading && <p className="animes-page__status">Chargement...</p>}
         {!isLoading && errorMessage && (
           <p className="animes-page__status animes-page__status--error" role="alert">
@@ -56,7 +72,12 @@ export function AnimesPage() {
         {!isLoading && !errorMessage && animes.length === 0 && (
           <EmptyState message="Aucun anime n'existe pour le moment." />
         )}
-        {!isLoading && !errorMessage && animes.length > 0 && <AnimeTable animes={animes} />}
+        {!isLoading && !errorMessage && animes.length > 0 && filteredAnimes.length === 0 && (
+          <EmptyState message="Aucun anime ne correspond à ta recherche." />
+        )}
+        {!isLoading && !errorMessage && filteredAnimes.length > 0 && (
+          <AnimeTable animes={filteredAnimes} />
+        )}
       </main>
     </div>
   )
