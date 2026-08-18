@@ -53,3 +53,26 @@ export async function createPokemonGame(name: string): Promise<PokemonMutationRe
 
   return { error: error ? error.message : null }
 }
+
+/**
+ * Met à jour le nom d'un jeu Pokémon existant.
+ * @param id identifiant du jeu à modifier
+ * @param name nouveau nom du jeu
+ * @returns un message d'erreur si la mise à jour a échoué, ou null si elle a réussi
+ */
+export async function updatePokemonGame(id: string, name: string): Promise<PokemonMutationResult> {
+  const { error } = await supabase.from('pokemon_games').update({ name }).eq('id', id)
+
+  return { error: error ? error.message : null }
+}
+
+/**
+ * Supprime définitivement un jeu Pokémon.
+ * @param id identifiant du jeu à supprimer
+ * @returns un message d'erreur si la suppression a échoué, ou null si elle a réussi
+ */
+export async function deletePokemonGame(id: string): Promise<PokemonMutationResult> {
+  const { error } = await supabase.from('pokemon_games').delete().eq('id', id)
+
+  return { error: error ? error.message : null }
+}

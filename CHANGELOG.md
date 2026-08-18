@@ -32,3 +32,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Script SQL `assembly/003_create_pokemon_games_table.sql` (table `pokemon_games`)
 - Page Pokémon (`/pokemon`), lien "Pokémon" dans la `Navbar`
 - Affichage des jeux Pokémon existants sous forme de cartes
+- Modification et suppression d'un jeu Pokémon directement depuis sa carte

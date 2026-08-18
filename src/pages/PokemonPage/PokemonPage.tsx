@@ -5,28 +5,36 @@ import { Modal } from '../../components/Modal/Modal'
 import { FormField } from '../../components/FormField/FormField'
 import { PrimaryButton } from '../../components/PrimaryButton/PrimaryButton'
 import { EmptyState } from '../../components/EmptyState/EmptyState'
+import { ConfirmDialog } from '../../components/ConfirmDialog/ConfirmDialog'
 import { PokemonGameCard } from '../../components/PokemonGameCard/PokemonGameCard'
 import {
   createPokemonGame,
+  deletePokemonGame,
   fetchPokemonGames,
+  updatePokemonGame,
   type PokemonGame,
 } from '../../features/pokemon/pokemonApi'
 import './PokemonPage.css'
 
+type FormState = { mode: 'create' } | { mode: 'edit'; game: PokemonGame } | null
+
 /**
  * Page de suivi des jeux Pokémon de l'utilisateur connecté. Affiche
- * les jeux existants sous forme de cartes, et permet d'en ajouter un
- * nouveau par son nom.
+ * les jeux existants sous forme de cartes, et permet d'en ajouter, d'en
+ * renommer ou d'en supprimer avec confirmation.
  */
 export function PokemonPage() {
   const [games, setGames] = useState<PokemonGame[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [formState, setFormState] = useState<FormState>(null)
   const [name, setName] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null)
+
+  const [gameToDelete, setGameToDelete] = useState<PokemonGame | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   /**
    * Recharge la liste des jeux Pokémon depuis Supabase et met à jour
@@ -54,25 +62,44 @@ export function PokemonPage() {
    * Ouvre la modale d'ajout avec un champ nom vide.
    * @returns rien, la fonction agit uniquement par effet de bord (état de la page)
    */
-  function openForm() {
+  function openCreateForm() {
     setName('')
     setFormErrorMessage(null)
-    setIsFormOpen(true)
+    setFormState({ mode: 'create' })
   }
 
   /**
-   * Crée un nouveau jeu Pokémon avec le nom saisi, recharge la liste,
-   * puis ferme la modale en cas de succès.
+   * Ouvre la modale de modification avec le nom actuel du jeu.
+   * @param game jeu à modifier
+   * @returns rien, la fonction agit uniquement par effet de bord (état de la page)
+   */
+  function openEditForm(game: PokemonGame) {
+    setName(game.name)
+    setFormErrorMessage(null)
+    setFormState({ mode: 'edit', game })
+  }
+
+  /**
+   * Crée ou met à jour un jeu Pokémon selon le mode actif, recharge la
+   * liste, puis ferme la modale en cas de succès.
    * @param event événement de soumission du formulaire
    * @returns rien, la fonction agit uniquement par effet de bord (état, réseau)
    */
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
+    if (!formState) {
+      return
+    }
+
     setFormErrorMessage(null)
     setIsSubmitting(true)
 
-    const { error } = await createPokemonGame(name.trim())
+    const trimmedName = name.trim()
+    const { error } =
+      formState.mode === 'create'
+        ? await createPokemonGame(trimmedName)
+        : await updatePokemonGame(formState.game.id, trimmedName)
 
     setIsSubmitting(false)
 
@@ -81,7 +108,32 @@ export function PokemonPage() {
       return
     }
 
-    setIsFormOpen(false)
+    setFormState(null)
+    await refreshGames()
+  }
+
+  /**
+   * Confirme la suppression du jeu sélectionné, puis recharge la liste
+   * et ferme la modale de confirmation en cas de succès.
+   * @returns rien, la fonction agit uniquement par effet de bord (état, réseau)
+   */
+  async function handleConfirmDelete() {
+    if (!gameToDelete) {
+      return
+    }
+
+    setIsDeleting(true)
+
+    const { error } = await deletePokemonGame(gameToDelete.id)
+
+    setIsDeleting(false)
+
+    if (error) {
+      setErrorMessage(error)
+      return
+    }
+
+    setGameToDelete(null)
     await refreshGames()
   }
 
@@ -91,7 +143,7 @@ export function PokemonPage() {
       <main className="pokemon-page__content">
         <div className="pokemon-page__header">
           <h1 className="pokemon-page__title">Pokémon</h1>
-          <button type="button" className="pokemon-page__add" onClick={openForm}>
+          <button type="button" className="pokemon-page__add" onClick={openCreateForm}>
             <Plus aria-hidden="true" />
             Ajouter un jeu
           </button>
@@ -108,14 +160,22 @@ export function PokemonPage() {
         {!isLoading && !errorMessage && games.length > 0 && (
           <div className="pokemon-page__grid">
             {games.map((game) => (
-              <PokemonGameCard key={game.id} game={game} />
+              <PokemonGameCard
+                key={game.id}
+                game={game}
+                onEdit={openEditForm}
+                onDelete={(selectedGame) => setGameToDelete(selectedGame)}
+              />
             ))}
           </div>
         )}
       </main>
 
-      {isFormOpen && (
-        <Modal title="Ajouter un jeu" onClose={() => setIsFormOpen(false)}>
+      {formState && (
+        <Modal
+          title={formState.mode === 'create' ? 'Ajouter un jeu' : 'Modifier un jeu'}
+          onClose={() => setFormState(null)}
+        >
           <form className="pokemon-page__form" onSubmit={handleSubmit}>
             <FormField
               id="pokemon-game-name"
@@ -134,7 +194,7 @@ export function PokemonPage() {
               <button
                 type="button"
                 className="pokemon-page__form-cancel"
-                onClick={() => setIsFormOpen(false)}
+                onClick={() => setFormState(null)}
               >
                 Annuler
               </button>
@@ -143,11 +203,26 @@ export function PokemonPage() {
                 className="pokemon-page__form-submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Ajout...' : 'Ajouter'}
+                {isSubmitting
+                  ? 'Enregistrement...'
+                  : formState.mode === 'create'
+                    ? 'Ajouter'
+                    : 'Enregistrer'}
               </PrimaryButton>
             </div>
           </form>
         </Modal>
+      )}
+
+      {gameToDelete && (
+        <ConfirmDialog
+          title="Supprimer ce jeu"
+          message={`Es-tu sûr de vouloir supprimer "${gameToDelete.name}" ? Cette action est définitive.`}
+          confirmLabel="Supprimer"
+          isConfirming={isDeleting}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setGameToDelete(null)}
+        />
       )}
     </div>
   )
