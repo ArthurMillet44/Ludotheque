@@ -1,0 +1,106 @@
+.skyrim-mod-table__wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+}
+
+.skyrim-mod-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.skyrim-mod-table th,
+.skyrim-mod-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.skyrim-mod-table thead th {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.skyrim-mod-table__sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+}
+
+.skyrim-mod-table__sort-button svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.skyrim-mod-table__sort-button:hover {
+  color: var(--color-text-primary);
+}
+
+.skyrim-mod-table__sort-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.skyrim-mod-table__sort-icon--idle {
+  opacity: 0.4;
+}
+
+.skyrim-mod-table tbody tr:nth-child(even) {
+  background: var(--color-tab-track);
+}
+
+.skyrim-mod-table tbody tr:hover {
+  background: var(--color-surface-border);
+}
+
+.skyrim-mod-table__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.skyrim-mod-table__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.skyrim-mod-table__action svg {
+  width: 16px;
+  height: 16px;
+}
+
+.skyrim-mod-table__action:hover {
+  color: var(--color-text-primary);
+  background: var(--color-tab-track);
+}
+
+.skyrim-mod-table__action:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.skyrim-mod-table__action--danger:hover {
+  color: var(--color-error);
+}

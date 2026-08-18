@@ -7,6 +7,12 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
+### Modifié
+
+- `README.md` : ajout d'une phrase précisant le but du projet (animes, mangas, mods Skyrim, suivis Nuzlocke Pokémon, et d'autres catégories à venir)
+
+## [1.0.0] - 2026-08-18
+
 ### Ajouté
 
 - Mise en place de la structure de base du projet : `README.md`, `CHANGELOG.md`, `.gitignore`, `.env` / `.env.example`, workflow CI GitHub Actions.
@@ -38,3 +44,13 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Affichage des Pokémon capturés (`fetchPokemonCaptures`) sur la page de détail d'un jeu
 - Modification et suppression d'une capture, ligne par ligne, dans le tableau de la page de détail d'un jeu
 - Tri du tableau des captures par zone, Pokémon capturé ou statut, et barre de recherche sur la page de détail d'un jeu
+- Page Skyrim (`/skyrim`), lien "Skyrim" dans la `Navbar`
+- Script SQL `assembly/005_create_skyrim_modpack_table.sql` (table `skyrim_modpack`)
+- Logique backend et CRUD complet pour la page Skyrim : affichage des modpacks sous forme de cartes, ajout, modification et suppression
+- Script SQL `assembly/006_create_skyrim_mod_list_table.sql` (table `skyrim_mod_list`)
+- Page de détail d'un modpack Skyrim (`/skyrim/:id`)
+- Bouton "Infos supplémentaires" sur la page de détail d'un modpack Skyrim, ouvrant une modale avec un texte statique
+
+### Modifié
+
+- Nom de l'application : "Cinémathèque" renommé en "Ludothèque" (titre de la page et logo)
