@@ -20,8 +20,6 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Inscription d'un utilisateur via Supabase Auth (`signUpWithEmail`) depuis l'onglet Inscription du formulaire, avec affichage d'une erreur et redirection vers `/animes` en cas de succès
 - Connexion d'un utilisateur via Supabase Auth (`signInWithEmail`) depuis l'onglet Connexion du formulaire, avec affichage d'une erreur et redirection vers `/animes` en cas de succès
 - Barre de navigation (`Navbar`) avec logo et menu de profil (`ProfileMenu`) proposant la déconnexion, affichée sur la page Animes à la place du bouton de déconnexion isolé
-- Dossier `assembly/` avec les scripts SQL Supabase : `001_create_anime_list_table.sql` (table `anime_list` avec Row Level Security par utilisateur) et `002_seed_anime_list.sql` (import des 377 animes de l'export Excel personnel)
-
-### Corrigé
-
-- Débordement du champ mot de passe et des onglets connexion/inscription hors de la carte sur petits écrans (largeur minimale par défaut des éléments flex non contrainte).
+- Dossier `assembly/` avec les scripts SQL Supabase : `001_create_anime_list_table.sql` (table `anime_list`)
+- Affichage de la liste des animes de l'utilisateur connecté (`fetchAnimes`) sur la page Animes, sous forme de tableau, avec états de chargement, d'erreur et de liste vide ("Aucun anime n'existe pour le moment")
+- Lien de navigation "Animes" dans la `Navbar`, préparant l'ajout de futures catégories (mangas, films)
