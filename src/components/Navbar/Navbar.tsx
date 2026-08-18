@@ -22,6 +22,14 @@ export function Navbar() {
           >
             Animes
           </NavLink>
+          <NavLink
+            to="/mangas"
+            className={({ isActive }) =>
+              isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+            }
+          >
+            Mangas
+          </NavLink>
         </nav>
       </div>
       <ProfileMenu />
