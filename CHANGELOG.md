@@ -33,3 +33,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Page Pokémon (`/pokemon`), lien "Pokémon" dans la `Navbar`
 - Affichage des jeux Pokémon existants sous forme de cartes
 - Modification et suppression d'un jeu Pokémon directement depuis sa carte
+- Page de détail d'un jeu Pokémon (`/pokemon/:id`)

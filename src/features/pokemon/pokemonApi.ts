@@ -14,6 +14,11 @@ export interface PokemonMutationResult {
   error: string | null
 }
 
+export interface FetchPokemonGameResult {
+  game: PokemonGame | null
+  error: string | null
+}
+
 /**
  * Récupère la liste des jeux Pokémon de l'utilisateur connecté, triée
  * par nom. Le filtrage par utilisateur est assuré par les policies Row
@@ -32,6 +37,25 @@ export async function fetchPokemonGames(): Promise<FetchPokemonGamesResult> {
   }
 
   return { games: data ?? [], error: null }
+}
+
+/**
+ * Récupère un jeu Pokémon précis par son identifiant.
+ * @param id identifiant du jeu recherché
+ * @returns le jeu correspondant (ou null s'il n'existe pas), et un message d'erreur si la récupération a échoué
+ */
+export async function fetchPokemonGameById(id: string): Promise<FetchPokemonGameResult> {
+  const { data, error } = await supabase
+    .from('pokemon_games')
+    .select('id, name')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (error) {
+    return { game: null, error: error.message }
+  }
+
+  return { game: data, error: null }
 }
 
 /**
