@@ -41,3 +41,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Page Skyrim (`/skyrim`), lien "Skyrim" dans la `Navbar`
 - Script SQL `assembly/005_create_skyrim_modpack_table.sql` (table `skyrim_modpack`)
 - Logique backend et CRUD complet pour la page Skyrim : affichage des modpacks sous forme de cartes, ajout, modification et suppression
+- Script SQL `assembly/006_create_skyrim_mod_list_table.sql` (table `skyrim_mod_list`)
