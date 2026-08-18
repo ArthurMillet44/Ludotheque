@@ -13,6 +13,14 @@
   padding: var(--space-4);
 }
 
+.animes-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
 .animes-page__title {
   font-family: var(--font-display);
   font-weight: 400;
@@ -21,6 +29,36 @@
   text-transform: uppercase;
   color: var(--color-accent);
   margin: 0;
+}
+
+.animes-page__add {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.animes-page__add svg {
+  width: 18px;
+  height: 18px;
+}
+
+.animes-page__add:hover {
+  background: var(--color-accent-hover);
+}
+
+.animes-page__add:focus-visible {
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: 2px;
 }
 
 .animes-page__status {

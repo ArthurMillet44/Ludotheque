@@ -1,10 +1,14 @@
 import { useMemo, useState } from 'react'
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown, Pencil, Plus, Trash2 } from 'lucide-react'
 import type { Anime } from '../../features/animes/animesApi'
 import './AnimeTable.css'
 
 interface AnimeTableProps {
   animes: Anime[]
+  incrementingAnimeId: string | null
+  onIncrementEpisode: (anime: Anime) => void
+  onEdit: (anime: Anime) => void
+  onDelete: (anime: Anime) => void
 }
 
 type SortKey = 'title' | 'episodes' | 'status' | 'currentSeason'
@@ -55,7 +59,13 @@ function compareAnimes(a: Anime, b: Anime, key: SortKey): number {
  * épisodes, statut, saison en cours, commentaire). Le tri est purement
  * visuel et s'applique aux données reçues en props, sans appel réseau.
  */
-export function AnimeTable({ animes }: AnimeTableProps) {
+export function AnimeTable({
+  animes,
+  incrementingAnimeId,
+  onIncrementEpisode,
+  onEdit,
+  onDelete,
+}: AnimeTableProps) {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null)
 
   const sortedAnimes = useMemo(() => {
@@ -118,6 +128,7 @@ export function AnimeTable({ animes }: AnimeTableProps) {
               )
             })}
             <th>Commentaire</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -127,7 +138,36 @@ export function AnimeTable({ animes }: AnimeTableProps) {
               <td>{anime.episodes ?? '-'}</td>
               <td>{anime.status}</td>
               <td>{anime.currentSeason ?? '-'}</td>
-              <td>{anime.comment ?? ''}</td>
+              <td className="anime-table__cell--comment">{anime.comment ?? ''}</td>
+              <td>
+                <div className="anime-table__actions">
+                  <button
+                    type="button"
+                    className="anime-table__action"
+                    aria-label={`Ajouter un épisode à ${anime.title}`}
+                    disabled={incrementingAnimeId === anime.id}
+                    onClick={() => onIncrementEpisode(anime)}
+                  >
+                    <Plus aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="anime-table__action"
+                    aria-label={`Modifier ${anime.title}`}
+                    onClick={() => onEdit(anime)}
+                  >
+                    <Pencil aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="anime-table__action anime-table__action--danger"
+                    aria-label={`Supprimer ${anime.title}`}
+                    onClick={() => onDelete(anime)}
+                  >
+                    <Trash2 aria-hidden="true" />
+                  </button>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
