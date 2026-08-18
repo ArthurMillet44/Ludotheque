@@ -29,3 +29,11 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Composants génériques `Modal` et `SelectField`, réutilisables pour d'autres formulaires/boîtes de dialogue
 - Script SQL `assembly/002_create_manga_list_table.sql` (table `manga_list`)
 - Page Mangas (`/mangas`), lien "Mangas" dans la `Navbar`
+- Script SQL `assembly/003_create_pokemon_games_table.sql` (table `pokemon_games`)
+- Page Pokémon (`/pokemon`), lien "Pokémon" dans la `Navbar`
+- Affichage des jeux Pokémon existants sous forme de cartes
+- Modification et suppression d'un jeu Pokémon directement depuis sa carte
+- Page de détail d'un jeu Pokémon (`/pokemon/:id`)
+- Script SQL `assembly/004_create_pokemon_captures_table.sql` (table `pokemon_captures`)
+- Affichage des Pokémon capturés (`fetchPokemonCaptures`) sur la page de détail d'un jeu
+- Modification et suppression d'une capture, ligne par ligne, dans le tableau de la page de détail d'un jeu
