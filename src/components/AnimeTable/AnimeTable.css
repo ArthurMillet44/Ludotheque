@@ -30,6 +30,38 @@
   top: 0;
 }
 
+.anime-table__sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+}
+
+.anime-table__sort-button svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.anime-table__sort-button:hover {
+  color: var(--color-text-primary);
+}
+
+.anime-table__sort-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.anime-table__sort-icon--idle {
+  opacity: 0.4;
+}
+
 .anime-table tbody tr:nth-child(even) {
   background: var(--color-tab-track);
 }

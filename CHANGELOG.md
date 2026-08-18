@@ -23,3 +23,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Dossier `assembly/` avec les scripts SQL Supabase : `001_create_anime_list_table.sql` (table `anime_list`)
 - Affichage de la liste des animes de l'utilisateur connecté (`fetchAnimes`) sur la page Animes, sous forme de tableau, avec états de chargement, d'erreur et de liste vide ("Aucun anime n'existe pour le moment")
 - Lien de navigation "Animes" dans la `Navbar`, préparant l'ajout de futures catégories (mangas, films)
+- Tri du tableau des animes par titre, épisodes, statut ou saison, avec une flèche indiquant la colonne et le sens du tri actifs
