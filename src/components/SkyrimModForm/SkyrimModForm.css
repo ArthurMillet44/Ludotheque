@@ -1,0 +1,44 @@
+.skyrim-mod-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skyrim-mod-form__error {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-error);
+}
+
+.skyrim-mod-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.skyrim-mod-form__cancel {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.skyrim-mod-form__cancel:hover {
+  border-color: var(--color-text-secondary);
+}
+
+.skyrim-mod-form__cancel:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.skyrim-mod-form__submit {
+  width: auto;
+}

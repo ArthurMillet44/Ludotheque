@@ -14,6 +14,11 @@ export interface SkyrimModpackMutationResult {
   error: string | null
 }
 
+export interface FetchSkyrimModpackResult {
+  modpack: SkyrimModpack | null
+  error: string | null
+}
+
 /**
  * Récupère la liste des modpacks Skyrim de l'utilisateur connecté,
  * triée par nom. Le filtrage par utilisateur est assuré par les
@@ -32,6 +37,25 @@ export async function fetchSkyrimModpacks(): Promise<FetchSkyrimModpacksResult> 
   }
 
   return { modpacks: data ?? [], error: null }
+}
+
+/**
+ * Récupère un modpack Skyrim précis par son identifiant.
+ * @param id identifiant du modpack recherché
+ * @returns le modpack correspondant (ou null s'il n'existe pas), et un message d'erreur si la récupération a échoué
+ */
+export async function fetchSkyrimModpackById(id: string): Promise<FetchSkyrimModpackResult> {
+  const { data, error } = await supabase
+    .from('skyrim_modpack')
+    .select('id, name')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (error) {
+    return { modpack: null, error: error.message }
+  }
+
+  return { modpack: data, error: null }
 }
 
 /**
