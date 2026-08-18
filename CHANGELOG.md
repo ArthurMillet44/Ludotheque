@@ -27,3 +27,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Composant générique `SearchBar` réutilisable
 - CRUD sur les animes
 - Composants génériques `Modal` et `SelectField`, réutilisables pour d'autres formulaires/boîtes de dialogue
+- Script SQL `assembly/002_create_manga_list_table.sql` (table `manga_list`)
