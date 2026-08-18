@@ -18,8 +18,8 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Client Supabase partagé (`src/lib/supabaseClient.ts`) initialisé à partir des variables d'environnement
 - Mise en place du routage (react-router-dom) avec une page Animes provisoire comme destination après inscription
 - Inscription d'un utilisateur via Supabase Auth (`signUpWithEmail`) depuis l'onglet Inscription du formulaire, avec affichage d'une erreur et redirection vers `/animes` en cas de succès
-- Bouton de déconnexion (`signOut`) sur la page Animes, qui ramène vers la page de connexion
 - Connexion d'un utilisateur via Supabase Auth (`signInWithEmail`) depuis l'onglet Connexion du formulaire, avec affichage d'une erreur et redirection vers `/animes` en cas de succès
+- Barre de navigation (`Navbar`) avec logo et menu de profil (`ProfileMenu`) proposant la déconnexion, affichée sur la page Animes à la place du bouton de déconnexion isolé
 
 ### Corrigé
 
