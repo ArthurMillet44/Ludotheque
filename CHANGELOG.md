@@ -20,6 +20,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Inscription d'un utilisateur via Supabase Auth (`signUpWithEmail`) depuis l'onglet Inscription du formulaire, avec affichage d'une erreur et redirection vers `/animes` en cas de succès
 - Connexion d'un utilisateur via Supabase Auth (`signInWithEmail`) depuis l'onglet Connexion du formulaire, avec affichage d'une erreur et redirection vers `/animes` en cas de succès
 - Barre de navigation (`Navbar`) avec logo et menu de profil (`ProfileMenu`) proposant la déconnexion, affichée sur la page Animes à la place du bouton de déconnexion isolé
+- Dossier `assembly/` avec les scripts SQL Supabase : `001_create_anime_list_table.sql` (table `anime_list` avec Row Level Security par utilisateur) et `002_seed_anime_list.sql` (import des 377 animes de l'export Excel personnel)
 
 ### Corrigé
 
