@@ -1,14 +1,17 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { Plus } from 'lucide-react'
-import { Navbar } from '../../components/Navbar/Navbar'
-import { Modal } from '../../components/Modal/Modal'
-import { EmptyState } from '../../components/EmptyState/EmptyState'
-import { SearchBar } from '../../components/SearchBar/SearchBar'
-import { ConfirmDialog } from '../../components/ConfirmDialog/ConfirmDialog'
-import { SkyrimModTable } from '../../components/SkyrimModTable/SkyrimModTable'
-import { SkyrimModForm } from '../../components/SkyrimModForm/SkyrimModForm'
-import { fetchSkyrimModpackById, type SkyrimModpack } from '../../features/skyrim/skyrimApi'
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Info, Plus } from "lucide-react";
+import { Navbar } from "../../components/Navbar/Navbar";
+import { Modal } from "../../components/Modal/Modal";
+import { EmptyState } from "../../components/EmptyState/EmptyState";
+import { SearchBar } from "../../components/SearchBar/SearchBar";
+import { ConfirmDialog } from "../../components/ConfirmDialog/ConfirmDialog";
+import { SkyrimModTable } from "../../components/SkyrimModTable/SkyrimModTable";
+import { SkyrimModForm } from "../../components/SkyrimModForm/SkyrimModForm";
+import {
+  fetchSkyrimModpackById,
+  type SkyrimModpack,
+} from "../../features/skyrim/skyrimApi";
 import {
   createSkyrimMod,
   deleteSkyrimMod,
@@ -17,10 +20,10 @@ import {
   updateSkyrimMod,
   type SkyrimMod,
   type SkyrimModInput,
-} from '../../features/skyrim/skyrimModsApi'
-import './SkyrimModpackDetailPage.css'
+} from "../../features/skyrim/skyrimModsApi";
+import "./SkyrimModpackDetailPage.css";
 
-type FormState = { mode: 'create' } | { mode: 'edit'; mod: SkyrimMod } | null
+type FormState = { mode: "create" } | { mode: "edit"; mod: SkyrimMod } | null;
 
 /**
  * Page de détail d'un modpack Skyrim, accessible en cliquant sur sa
@@ -30,53 +33,57 @@ type FormState = { mode: 'create' } | { mode: 'edit'; mod: SkyrimMod } | null
  * d'en supprimer avec confirmation.
  */
 export function SkyrimModpackDetailPage() {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>();
 
-  const [modpack, setModpack] = useState<SkyrimModpack | null>(null)
-  const [isLoadingModpack, setIsLoadingModpack] = useState(true)
-  const [modpackErrorMessage, setModpackErrorMessage] = useState<string | null>(null)
+  const [modpack, setModpack] = useState<SkyrimModpack | null>(null);
+  const [isLoadingModpack, setIsLoadingModpack] = useState(true);
+  const [modpackErrorMessage, setModpackErrorMessage] = useState<string | null>(
+    null,
+  );
 
-  const [mods, setMods] = useState<SkyrimMod[]>([])
-  const [isLoadingMods, setIsLoadingMods] = useState(true)
-  const [modsErrorMessage, setModsErrorMessage] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [mods, setMods] = useState<SkyrimMod[]>([]);
+  const [isLoadingMods, setIsLoadingMods] = useState(true);
+  const [modsErrorMessage, setModsErrorMessage] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [formState, setFormState] = useState<FormState>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null)
+  const [formState, setFormState] = useState<FormState>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
 
-  const [modToDelete, setModToDelete] = useState<SkyrimMod | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [modToDelete, setModToDelete] = useState<SkyrimMod | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   useEffect(() => {
-    let isMounted = true
+    let isMounted = true;
 
     async function loadModpack() {
       if (!id) {
-        return
+        return;
       }
 
-      const { modpack: result, error } = await fetchSkyrimModpackById(id)
+      const { modpack: result, error } = await fetchSkyrimModpackById(id);
 
       if (!isMounted) {
-        return
+        return;
       }
 
       if (error) {
-        setModpackErrorMessage(error)
+        setModpackErrorMessage(error);
       } else {
-        setModpack(result)
+        setModpack(result);
       }
 
-      setIsLoadingModpack(false)
+      setIsLoadingModpack(false);
     }
 
-    loadModpack()
+    loadModpack();
 
     return () => {
-      isMounted = false
-    }
-  }, [id])
+      isMounted = false;
+    };
+  }, [id]);
 
   /**
    * Recharge la liste des mods pour ce modpack depuis Supabase et met
@@ -85,34 +92,37 @@ export function SkyrimModpackDetailPage() {
    */
   async function refreshMods() {
     if (!id) {
-      return
+      return;
     }
 
-    const { mods: result, error } = await fetchSkyrimMods(id)
+    const { mods: result, error } = await fetchSkyrimMods(id);
 
     if (error) {
-      setModsErrorMessage(error)
+      setModsErrorMessage(error);
     } else {
-      setMods(result)
-      setModsErrorMessage(null)
+      setMods(result);
+      setModsErrorMessage(null);
     }
 
-    setIsLoadingMods(false)
+    setIsLoadingMods(false);
   }
 
   useEffect(() => {
-    refreshMods()
-  }, [id])
+    refreshMods();
+  }, [id]);
 
-  const filteredMods = useMemo(() => filterSkyrimMods(mods, searchQuery), [mods, searchQuery])
+  const filteredMods = useMemo(
+    () => filterSkyrimMods(mods, searchQuery),
+    [mods, searchQuery],
+  );
 
   /**
    * Ouvre la modale d'ajout d'un mod.
    * @returns rien, la fonction agit uniquement par effet de bord (état de la page)
    */
   function openCreateForm() {
-    setFormErrorMessage(null)
-    setFormState({ mode: 'create' })
+    setFormErrorMessage(null);
+    setFormState({ mode: "create" });
   }
 
   /**
@@ -121,8 +131,8 @@ export function SkyrimModpackDetailPage() {
    * @returns rien, la fonction agit uniquement par effet de bord (état de la page)
    */
   function openEditForm(mod: SkyrimMod) {
-    setFormErrorMessage(null)
-    setFormState({ mode: 'edit', mod })
+    setFormErrorMessage(null);
+    setFormState({ mode: "edit", mod });
   }
 
   /**
@@ -133,26 +143,26 @@ export function SkyrimModpackDetailPage() {
    */
   async function handleSubmit(input: SkyrimModInput) {
     if (!id || !formState) {
-      return
+      return;
     }
 
-    setFormErrorMessage(null)
-    setIsSubmitting(true)
+    setFormErrorMessage(null);
+    setIsSubmitting(true);
 
     const { error } =
-      formState.mode === 'create'
+      formState.mode === "create"
         ? await createSkyrimMod(id, input)
-        : await updateSkyrimMod(formState.mod.id, input)
+        : await updateSkyrimMod(formState.mod.id, input);
 
-    setIsSubmitting(false)
+    setIsSubmitting(false);
 
     if (error) {
-      setFormErrorMessage(error)
-      return
+      setFormErrorMessage(error);
+      return;
     }
 
-    setFormState(null)
-    await refreshMods()
+    setFormState(null);
+    await refreshMods();
   }
 
   /**
@@ -162,22 +172,22 @@ export function SkyrimModpackDetailPage() {
    */
   async function handleConfirmDelete() {
     if (!modToDelete) {
-      return
+      return;
     }
 
-    setIsDeleting(true)
+    setIsDeleting(true);
 
-    const { error } = await deleteSkyrimMod(modToDelete.id)
+    const { error } = await deleteSkyrimMod(modToDelete.id);
 
-    setIsDeleting(false)
+    setIsDeleting(false);
 
     if (error) {
-      setModsErrorMessage(error)
-      return
+      setModsErrorMessage(error);
+      return;
     }
 
-    setModToDelete(null)
-    await refreshMods()
+    setModToDelete(null);
+    await refreshMods();
   }
 
   return (
@@ -196,20 +206,34 @@ export function SkyrimModpackDetailPage() {
           </p>
         )}
         {!isLoadingModpack && !modpackErrorMessage && !modpack && (
-          <p className="skyrim-modpack-detail-page__status">Ce modpack n'existe pas.</p>
+          <p className="skyrim-modpack-detail-page__status">
+            Ce modpack n'existe pas.
+          </p>
         )}
         {!isLoadingModpack && !modpackErrorMessage && modpack && (
           <>
             <div className="skyrim-modpack-detail-page__header">
-              <h1 className="skyrim-modpack-detail-page__title">{modpack.name}</h1>
-              <button
-                type="button"
-                className="skyrim-modpack-detail-page__add"
-                onClick={openCreateForm}
-              >
-                <Plus aria-hidden="true" />
-                Ajouter un mod
-              </button>
+              <h1 className="skyrim-modpack-detail-page__title">
+                {modpack.name}
+              </h1>
+              <div className="skyrim-modpack-detail-page__header-actions">
+                <button
+                  type="button"
+                  className="skyrim-modpack-detail-page__info"
+                  onClick={() => setIsInfoOpen(true)}
+                >
+                  <Info aria-hidden="true" />
+                  Infos supplémentaires
+                </button>
+                <button
+                  type="button"
+                  className="skyrim-modpack-detail-page__add"
+                  onClick={openCreateForm}
+                >
+                  <Plus aria-hidden="true" />
+                  Ajouter un mod
+                </button>
+              </div>
             </div>
             {!isLoadingMods && !modsErrorMessage && mods.length > 0 && (
               <SearchBar
@@ -219,7 +243,11 @@ export function SkyrimModpackDetailPage() {
                 ariaLabel="Rechercher un mod par nom ou par catégorie"
               />
             )}
-            {isLoadingMods && <p className="skyrim-modpack-detail-page__status">Chargement...</p>}
+            {isLoadingMods && (
+              <p className="skyrim-modpack-detail-page__status">
+                Chargement...
+              </p>
+            )}
             {!isLoadingMods && modsErrorMessage && (
               <p
                 className="skyrim-modpack-detail-page__status skyrim-modpack-detail-page__status--error"
@@ -250,11 +278,13 @@ export function SkyrimModpackDetailPage() {
 
       {formState && (
         <Modal
-          title={formState.mode === 'create' ? 'Ajouter un mod' : 'Modifier ce mod'}
+          title={
+            formState.mode === "create" ? "Ajouter un mod" : "Modifier ce mod"
+          }
           onClose={() => setFormState(null)}
         >
           <SkyrimModForm
-            initialMod={formState.mode === 'edit' ? formState.mod : null}
+            initialMod={formState.mode === "edit" ? formState.mod : null}
             onSubmit={handleSubmit}
             onCancel={() => setFormState(null)}
             isSubmitting={isSubmitting}
@@ -273,6 +303,18 @@ export function SkyrimModpackDetailPage() {
           onCancel={() => setModToDelete(null)}
         />
       )}
+
+      {isInfoOpen && (
+        <Modal
+          title="Infos supplémentaires"
+          onClose={() => setIsInfoOpen(false)}
+        >
+          <p className="skyrim-modpack-detail-page__info-text">
+            Ce modpack est présent en tant qu'archive sur mon disque dur
+            externe.
+          </p>
+        </Modal>
+      )}
     </div>
-  )
+  );
 }

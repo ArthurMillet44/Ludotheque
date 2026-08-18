@@ -43,3 +43,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Logique backend et CRUD complet pour la page Skyrim : affichage des modpacks sous forme de cartes, ajout, modification et suppression
 - Script SQL `assembly/006_create_skyrim_mod_list_table.sql` (table `skyrim_mod_list`)
 - Page de détail d'un modpack Skyrim (`/skyrim/:id`)
+- Bouton "Infos supplémentaires" sur la page de détail d'un modpack Skyrim, ouvrant une modale avec un texte statique
