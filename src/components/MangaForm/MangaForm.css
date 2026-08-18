@@ -1,0 +1,44 @@
+.manga-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.manga-form__error {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-error);
+}
+
+.manga-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.manga-form__cancel {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.manga-form__cancel:hover {
+  border-color: var(--color-text-secondary);
+}
+
+.manga-form__cancel:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.manga-form__submit {
+  width: auto;
+}

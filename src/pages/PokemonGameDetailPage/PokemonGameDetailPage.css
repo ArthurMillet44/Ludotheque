@@ -1,10 +1,10 @@
-.animes-page {
+.pokemon-game-detail-page {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
-.animes-page__content {
+.pokemon-game-detail-page__content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -13,7 +13,7 @@
   padding: var(--space-4);
 }
 
-.animes-page__header {
+.pokemon-game-detail-page__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -21,7 +21,7 @@
   flex-wrap: wrap;
 }
 
-.animes-page__title {
+.pokemon-game-detail-page__title {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 30px;
@@ -31,7 +31,7 @@
   margin: 0;
 }
 
-.animes-page__add {
+.pokemon-game-detail-page__add {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
@@ -47,25 +47,25 @@
   transition: background-color var(--transition-fast);
 }
 
-.animes-page__add svg {
+.pokemon-game-detail-page__add svg {
   width: 18px;
   height: 18px;
 }
 
-.animes-page__add:hover {
+.pokemon-game-detail-page__add:hover {
   background: var(--color-accent-hover);
 }
 
-.animes-page__add:focus-visible {
+.pokemon-game-detail-page__add:focus-visible {
   outline: 2px solid var(--color-text-primary);
   outline-offset: 2px;
 }
 
-.animes-page__status {
+.pokemon-game-detail-page__status {
   color: var(--color-text-secondary);
   margin: 0;
 }
 
-.animes-page__status--error {
+.pokemon-game-detail-page__status--error {
   color: var(--color-error);
 }

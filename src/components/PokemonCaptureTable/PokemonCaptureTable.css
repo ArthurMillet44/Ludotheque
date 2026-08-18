@@ -1,0 +1,106 @@
+.pokemon-capture-table__wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+}
+
+.pokemon-capture-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.pokemon-capture-table th,
+.pokemon-capture-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.pokemon-capture-table thead th {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.pokemon-capture-table__sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+}
+
+.pokemon-capture-table__sort-button svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.pokemon-capture-table__sort-button:hover {
+  color: var(--color-text-primary);
+}
+
+.pokemon-capture-table__sort-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.pokemon-capture-table__sort-icon--idle {
+  opacity: 0.4;
+}
+
+.pokemon-capture-table tbody tr:nth-child(even) {
+  background: var(--color-tab-track);
+}
+
+.pokemon-capture-table tbody tr:hover {
+  background: var(--color-surface-border);
+}
+
+.pokemon-capture-table__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.pokemon-capture-table__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.pokemon-capture-table__action svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pokemon-capture-table__action:hover {
+  color: var(--color-text-primary);
+  background: var(--color-tab-track);
+}
+
+.pokemon-capture-table__action:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.pokemon-capture-table__action--danger:hover {
+  color: var(--color-error);
+}
