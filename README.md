@@ -1,4 +1,4 @@
-# ListeMangas
+# Ludotheque
 
 Application web pour gérer sa liste personnelle de mangas, animes, films et autres catégories de médias.
 
@@ -45,6 +45,17 @@ npm run dev
 ```bash
 npm run build
 ```
+
+## Déploiement (Vercel)
+
+1. Pousser le projet sur GitHub (déjà fait pour ce repo).
+2. Sur [vercel.com](https://vercel.com/), se connecter avec le compte GitHub, puis "Add New Project" et importer le repo `Ludotheque`.
+3. Vercel détecte automatiquement le framework Vite (commande de build `npm run build`, dossier de sortie `dist`) : ne rien changer à cette étape.
+4. Dans "Environment Variables", renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` avec les mêmes valeurs que dans `.env`.
+5. Cliquer sur "Deploy".
+6. Une fois le site en ligne, aller dans le dashboard Supabase (`Authentication > URL Configuration`) et ajouter l'URL du site Vercel (ex. `https://ludotheque.vercel.app`) en "Site URL" / "Redirect URLs", pour que l'authentification fonctionne correctement en production.
+
+Le fichier `vercel.json` à la racine configure la redirection nécessaire pour que les routes de l'application (`/animes`, `/pokemon/:id`, etc.) fonctionnent au rafraîchissement de page, puisque le routage est géré côté client par `react-router`.
 
 ## État du projet
 
