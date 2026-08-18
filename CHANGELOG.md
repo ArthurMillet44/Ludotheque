@@ -37,3 +37,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Script SQL `assembly/004_create_pokemon_captures_table.sql` (table `pokemon_captures`)
 - Affichage des Pokémon capturés (`fetchPokemonCaptures`) sur la page de détail d'un jeu
 - Modification et suppression d'une capture, ligne par ligne, dans le tableau de la page de détail d'un jeu
+- Tri du tableau des captures par zone, Pokémon capturé ou statut, et barre de recherche sur la page de détail d'un jeu

@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { Navbar } from '../../components/Navbar/Navbar'
 import { Modal } from '../../components/Modal/Modal'
 import { EmptyState } from '../../components/EmptyState/EmptyState'
+import { SearchBar } from '../../components/SearchBar/SearchBar'
 import { ConfirmDialog } from '../../components/ConfirmDialog/ConfirmDialog'
 import { PokemonCaptureTable } from '../../components/PokemonCaptureTable/PokemonCaptureTable'
 import { PokemonCaptureForm } from '../../components/PokemonCaptureForm/PokemonCaptureForm'
@@ -12,6 +13,7 @@ import {
   createPokemonCapture,
   deletePokemonCapture,
   fetchPokemonCaptures,
+  filterPokemonCaptures,
   updatePokemonCapture,
   type PokemonCapture,
   type PokemonCaptureInput,
@@ -37,6 +39,7 @@ export function PokemonGameDetailPage() {
   const [captures, setCaptures] = useState<PokemonCapture[]>([])
   const [isLoadingCaptures, setIsLoadingCaptures] = useState(true)
   const [capturesErrorMessage, setCapturesErrorMessage] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const [formState, setFormState] = useState<FormState>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -100,6 +103,11 @@ export function PokemonGameDetailPage() {
   useEffect(() => {
     refreshCaptures()
   }, [id])
+
+  const filteredCaptures = useMemo(
+    () => filterPokemonCaptures(captures, searchQuery),
+    [captures, searchQuery],
+  )
 
   /**
    * Ouvre la modale d'ajout d'un Pokémon capturé.
@@ -204,6 +212,14 @@ export function PokemonGameDetailPage() {
                 Ajouter un Pokémon
               </button>
             </div>
+            {!isLoadingCaptures && !capturesErrorMessage && captures.length > 0 && (
+              <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Rechercher une zone ou un Pokémon..."
+                ariaLabel="Rechercher une capture par zone ou par Pokémon"
+              />
+            )}
             {isLoadingCaptures && (
               <p className="pokemon-game-detail-page__status">Chargement...</p>
             )}
@@ -218,9 +234,15 @@ export function PokemonGameDetailPage() {
             {!isLoadingCaptures && !capturesErrorMessage && captures.length === 0 && (
               <EmptyState message="Aucun Pokémon capturé pour l'instant." />
             )}
-            {!isLoadingCaptures && !capturesErrorMessage && captures.length > 0 && (
+            {!isLoadingCaptures &&
+              !capturesErrorMessage &&
+              captures.length > 0 &&
+              filteredCaptures.length === 0 && (
+                <EmptyState message="Aucune capture ne correspond à ta recherche." />
+              )}
+            {!isLoadingCaptures && !capturesErrorMessage && filteredCaptures.length > 0 && (
               <PokemonCaptureTable
-                captures={captures}
+                captures={filteredCaptures}
                 onEdit={openEditForm}
                 onDelete={(capture) => setCaptureToDelete(capture)}
               />
