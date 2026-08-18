@@ -34,3 +34,4 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Affichage des jeux Pokémon existants sous forme de cartes
 - Modification et suppression d'un jeu Pokémon directement depuis sa carte
 - Page de détail d'un jeu Pokémon (`/pokemon/:id`)
+- Script SQL `assembly/004_create_pokemon_captures_table.sql` (table `pokemon_captures`)
