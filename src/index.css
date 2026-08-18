@@ -17,6 +17,8 @@
   --color-accent-hover: #e6982a;
   --color-accent-text: #1a1206;
 
+  --color-error: #f27272;
+
   --font-display: 'Anton', var(--font-body);
   --font-body: system-ui, 'Segoe UI', Roboto, sans-serif;
 
