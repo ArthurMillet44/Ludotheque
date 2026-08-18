@@ -120,3 +120,25 @@ export async function deletePokemonCapture(id: string): Promise<PokemonCaptureMu
 
   return { error: error ? error.message : null }
 }
+
+/**
+ * Filtre une liste de captures selon un texte recherché dans la zone
+ * ou le nom du Pokémon capturé, sans tenir compte de la casse. Renvoie
+ * la liste complète si la recherche est vide.
+ * @param captures liste de captures à filtrer
+ * @param query texte recherché
+ * @returns les captures dont la zone ou le Pokémon capturé contient le texte recherché
+ */
+export function filterPokemonCaptures(captures: PokemonCapture[], query: string): PokemonCapture[] {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  if (!normalizedQuery) {
+    return captures
+  }
+
+  return captures.filter(
+    (capture) =>
+      capture.zone.toLowerCase().includes(normalizedQuery) ||
+      capture.capturedPokemon.toLowerCase().includes(normalizedQuery),
+  )
+}
