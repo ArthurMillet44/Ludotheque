@@ -8,8 +8,8 @@ create table if not exists public.skyrim_mod_list (
   user_id uuid not null references auth.users (id) on delete cascade,
   skyrim_modpack_id uuid not null references public.skyrim_modpack (id) on delete cascade,
   mod_name varchar(100) not null,
-  version varchar(50) not null,
-  category varchar(50) not null,
+  version varchar(50),
+  category varchar(50),
   deploy_order integer not null,
   created_at timestamptz not null default now()
 );
