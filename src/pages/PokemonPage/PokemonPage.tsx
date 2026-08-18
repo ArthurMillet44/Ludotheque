@@ -1,22 +1,54 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Plus } from 'lucide-react'
 import { Navbar } from '../../components/Navbar/Navbar'
 import { Modal } from '../../components/Modal/Modal'
 import { FormField } from '../../components/FormField/FormField'
 import { PrimaryButton } from '../../components/PrimaryButton/PrimaryButton'
-import { createPokemonGame } from '../../features/pokemon/pokemonApi'
+import { EmptyState } from '../../components/EmptyState/EmptyState'
+import { PokemonGameCard } from '../../components/PokemonGameCard/PokemonGameCard'
+import {
+  createPokemonGame,
+  fetchPokemonGames,
+  type PokemonGame,
+} from '../../features/pokemon/pokemonApi'
 import './PokemonPage.css'
 
 /**
- * Page de suivi des jeux Pokémon de l'utilisateur connecté. Pour
- * l'instant, permet uniquement d'ajouter un jeu par son nom ; aucun
- * affichage de la liste n'est encore en place.
+ * Page de suivi des jeux Pokémon de l'utilisateur connecté. Affiche
+ * les jeux existants sous forme de cartes, et permet d'en ajouter un
+ * nouveau par son nom.
  */
 export function PokemonPage() {
+  const [games, setGames] = useState<PokemonGame[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [name, setName] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null)
+
+  /**
+   * Recharge la liste des jeux Pokémon depuis Supabase et met à jour
+   * l'état de la page en conséquence.
+   * @returns rien, la fonction agit uniquement par effet de bord (état de la page)
+   */
+  async function refreshGames() {
+    const { games: result, error } = await fetchPokemonGames()
+
+    if (error) {
+      setErrorMessage(error)
+    } else {
+      setGames(result)
+      setErrorMessage(null)
+    }
+
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    refreshGames()
+  }, [])
 
   /**
    * Ouvre la modale d'ajout avec un champ nom vide.
@@ -24,20 +56,20 @@ export function PokemonPage() {
    */
   function openForm() {
     setName('')
-    setErrorMessage(null)
+    setFormErrorMessage(null)
     setIsFormOpen(true)
   }
 
   /**
-   * Crée un nouveau jeu Pokémon avec le nom saisi, puis ferme la
-   * modale en cas de succès.
+   * Crée un nouveau jeu Pokémon avec le nom saisi, recharge la liste,
+   * puis ferme la modale en cas de succès.
    * @param event événement de soumission du formulaire
    * @returns rien, la fonction agit uniquement par effet de bord (état, réseau)
    */
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    setErrorMessage(null)
+    setFormErrorMessage(null)
     setIsSubmitting(true)
 
     const { error } = await createPokemonGame(name.trim())
@@ -45,11 +77,12 @@ export function PokemonPage() {
     setIsSubmitting(false)
 
     if (error) {
-      setErrorMessage(error)
+      setFormErrorMessage(error)
       return
     }
 
     setIsFormOpen(false)
+    await refreshGames()
   }
 
   return (
@@ -63,6 +96,22 @@ export function PokemonPage() {
             Ajouter un jeu
           </button>
         </div>
+        {isLoading && <p className="pokemon-page__status">Chargement...</p>}
+        {!isLoading && errorMessage && (
+          <p className="pokemon-page__status pokemon-page__status--error" role="alert">
+            {errorMessage}
+          </p>
+        )}
+        {!isLoading && !errorMessage && games.length === 0 && (
+          <EmptyState message="Aucun jeu n'existe pour le moment." />
+        )}
+        {!isLoading && !errorMessage && games.length > 0 && (
+          <div className="pokemon-page__grid">
+            {games.map((game) => (
+              <PokemonGameCard key={game.id} game={game} />
+            ))}
+          </div>
+        )}
       </main>
 
       {isFormOpen && (
@@ -76,9 +125,9 @@ export function PokemonPage() {
               onChange={(event) => setName(event.target.value)}
               required
             />
-            {errorMessage && (
+            {formErrorMessage && (
               <p className="pokemon-page__form-error" role="alert">
-                {errorMessage}
+                {formErrorMessage}
               </p>
             )}
             <div className="pokemon-page__form-actions">

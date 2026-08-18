@@ -61,6 +61,22 @@
   outline-offset: 2px;
 }
 
+.pokemon-page__status {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.pokemon-page__status--error {
+  color: var(--color-error);
+}
+
+.pokemon-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 180px));
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
 .pokemon-page__form {
   display: flex;
   flex-direction: column;

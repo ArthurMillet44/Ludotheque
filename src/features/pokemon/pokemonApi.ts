@@ -1,7 +1,37 @@
 import { supabase } from '../../lib/supabaseClient'
 
+export interface PokemonGame {
+  id: string
+  name: string
+}
+
+export interface FetchPokemonGamesResult {
+  games: PokemonGame[]
+  error: string | null
+}
+
 export interface PokemonMutationResult {
   error: string | null
+}
+
+/**
+ * Récupère la liste des jeux Pokémon de l'utilisateur connecté, triée
+ * par nom. Le filtrage par utilisateur est assuré par les policies Row
+ * Level Security de la table pokemon_games, aucun filtre manuel n'est
+ * nécessaire ici.
+ * @returns la liste des jeux, et un message d'erreur si la récupération a échoué
+ */
+export async function fetchPokemonGames(): Promise<FetchPokemonGamesResult> {
+  const { data, error } = await supabase
+    .from('pokemon_games')
+    .select('id, name')
+    .order('name', { ascending: true })
+
+  if (error) {
+    return { games: [], error: error.message }
+  }
+
+  return { games: data ?? [], error: null }
 }
 
 /**
