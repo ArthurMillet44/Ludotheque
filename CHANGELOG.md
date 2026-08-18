@@ -7,6 +7,12 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
+### Modifié
+
+- `README.md` : ajout d'une phrase précisant le but du projet (animes, mangas, mods Skyrim, suivis Nuzlocke Pokémon, et d'autres catégories à venir)
+
+## [1.0.0] - 2026-08-18
+
 ### Ajouté
 
 - Mise en place de la structure de base du projet : `README.md`, `CHANGELOG.md`, `.gitignore`, `.env` / `.env.example`, workflow CI GitHub Actions.

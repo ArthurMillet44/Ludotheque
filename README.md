@@ -2,6 +2,8 @@
 
 Application web pour gérer sa liste personnelle de mangas, animes, films et autres catégories de médias.
 
+Le but du projet est de répertorier des contenus personnels variés : animes vus, mangas lus, listes de mods pour Skyrim, suivis de parties Nuzlocke sur Pokémon, et d'autres catégories à venir.
+
 ## Stack technique
 
 - **Frontend** : [Vite](https://vitejs.dev/) + [React](https://react.dev/)
@@ -46,4 +48,4 @@ npm run build
 
 ## État du projet
 
-Le projet est en cours de structuration initiale. Voir [CHANGELOG.md](CHANGELOG.md) pour le détail de l'avancement.
+Version 1.0.0. Voir [CHANGELOG.md](CHANGELOG.md) pour le détail de l'avancement.
