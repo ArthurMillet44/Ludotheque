@@ -5,7 +5,13 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
-## [Non publié]
+## [1.1.0] - 2026-08-19
+
+### Ajouté
+
+- Fichier `vercel.json` avec la redirection nécessaire au routage côté client (`react-router`) lors d'un déploiement sur Vercel
+- Section "Déploiement (Vercel)" dans le `README.md`
+- Menu burger dans la `Navbar` sur petit écran pour le responsive
 
 ### Modifié
 
