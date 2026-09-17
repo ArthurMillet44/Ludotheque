@@ -23,8 +23,10 @@ type FormState = { mode: 'create' } | { mode: 'edit'; anime: Anime } | null
 /**
  * Page listant les animes de l'utilisateur connecté. Récupère la liste
  * depuis Supabase au chargement de la page, permet de la filtrer par
- * titre, et propose la création, la modification, la suppression et
- * l'incrémentation rapide du nombre d'épisodes.
+ * titre, et propose la création, la modification et la suppression
+ * d'un anime. Le nombre d'épisodes, le statut et les actions liées
+ * sont gérés saison par saison en dépliant une ligne du tableau (voir
+ * AnimeTable et AnimeSeasonsPanel).
  */
 export function AnimesPage() {
   const [animes, setAnimes] = useState<Anime[]>([])
@@ -38,8 +40,6 @@ export function AnimesPage() {
 
   const [animeToDelete, setAnimeToDelete] = useState<Anime | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
-
-  const [incrementingAnimeId, setIncrementingAnimeId] = useState<string | null>(null)
 
   /**
    * Recharge la liste des animes depuis Supabase et met à jour l'état
@@ -124,26 +124,6 @@ export function AnimesPage() {
     await refreshAnimes()
   }
 
-  /**
-   * Ajoute un épisode au compteur d'un anime, puis recharge la liste.
-   * @param anime anime concerné par l'incrémentation
-   * @returns rien, la fonction agit uniquement par effet de bord (état, réseau)
-   */
-  async function handleIncrementEpisode(anime: Anime) {
-    setIncrementingAnimeId(anime.id)
-
-    const { error } = await updateAnime(anime.id, { episodes: (anime.episodes ?? 0) + 1 })
-
-    setIncrementingAnimeId(null)
-
-    if (error) {
-      setErrorMessage(error)
-      return
-    }
-
-    await refreshAnimes()
-  }
-
   return (
     <div className="animes-page">
       <Navbar />
@@ -182,8 +162,6 @@ export function AnimesPage() {
         {!isLoading && !errorMessage && filteredAnimes.length > 0 && (
           <AnimeTable
             animes={filteredAnimes}
-            incrementingAnimeId={incrementingAnimeId}
-            onIncrementEpisode={handleIncrementEpisode}
             onEdit={(anime) => setFormState({ mode: 'edit', anime })}
             onDelete={(anime) => setAnimeToDelete(anime)}
           />

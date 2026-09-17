@@ -18,7 +18,63 @@
   white-space: nowrap;
 }
 
-.anime-table__cell--comment {
+.anime-table__col-toggle {
+  width: 32px;
+}
+
+.anime-table__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.anime-table__toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.anime-table__toggle:hover {
+  color: var(--color-text-primary);
+  background: var(--color-tab-track);
+}
+
+.anime-table__toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.anime-table__title-button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.anime-table__title-button:hover {
+  color: var(--color-accent);
+}
+
+.anime-table__title-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.anime-table__seasons-row td {
+  padding: 0;
   white-space: normal;
 }
 
@@ -68,6 +124,11 @@
 
 .anime-table tbody tr:hover {
   background: var(--color-surface-border);
+}
+
+.anime-table tbody tr.anime-table__seasons-row,
+.anime-table tbody tr.anime-table__seasons-row:hover {
+  background: transparent;
 }
 
 .anime-table__actions {
