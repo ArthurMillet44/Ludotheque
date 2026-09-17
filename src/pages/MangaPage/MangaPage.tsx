@@ -23,8 +23,10 @@ type FormState = { mode: 'create' } | { mode: 'edit'; manga: Manga } | null
 /**
  * Page listant les mangas de l'utilisateur connecté. Récupère la liste
  * depuis Supabase au chargement de la page, permet de la filtrer par
- * titre, et propose la création, la modification, la suppression et
- * l'incrémentation rapide du nombre de chapitres.
+ * titre, et propose la création, la modification et la suppression
+ * d'un manga. Le nombre de chapitres, le statut et les actions liées
+ * sont gérés saison par saison en dépliant une ligne du tableau (voir
+ * MangaTable et MangaSeasonsPanel).
  */
 export function MangaPage() {
   const [mangas, setMangas] = useState<Manga[]>([])
@@ -38,8 +40,6 @@ export function MangaPage() {
 
   const [mangaToDelete, setMangaToDelete] = useState<Manga | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
-
-  const [incrementingMangaId, setIncrementingMangaId] = useState<string | null>(null)
 
   /**
    * Recharge la liste des mangas depuis Supabase et met à jour l'état
@@ -124,26 +124,6 @@ export function MangaPage() {
     await refreshMangas()
   }
 
-  /**
-   * Ajoute un chapitre au compteur d'un manga, puis recharge la liste.
-   * @param manga manga concerné par l'incrémentation
-   * @returns rien, la fonction agit uniquement par effet de bord (état, réseau)
-   */
-  async function handleIncrementChapter(manga: Manga) {
-    setIncrementingMangaId(manga.id)
-
-    const { error } = await updateManga(manga.id, { chapters: (manga.chapters ?? 0) + 1 })
-
-    setIncrementingMangaId(null)
-
-    if (error) {
-      setErrorMessage(error)
-      return
-    }
-
-    await refreshMangas()
-  }
-
   return (
     <div className="manga-page">
       <Navbar />
@@ -182,8 +162,6 @@ export function MangaPage() {
         {!isLoading && !errorMessage && filteredMangas.length > 0 && (
           <MangaTable
             mangas={filteredMangas}
-            incrementingMangaId={incrementingMangaId}
-            onIncrementChapter={handleIncrementChapter}
             onEdit={(manga) => setFormState({ mode: 'edit', manga })}
             onDelete={(manga) => setMangaToDelete(manga)}
           />

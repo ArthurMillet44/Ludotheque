@@ -18,7 +18,63 @@
   white-space: nowrap;
 }
 
-.manga-table__cell--comment {
+.manga-table__col-toggle {
+  width: 32px;
+}
+
+.manga-table__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.manga-table__toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.manga-table__toggle:hover {
+  color: var(--color-text-primary);
+  background: var(--color-tab-track);
+}
+
+.manga-table__toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.manga-table__title-button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.manga-table__title-button:hover {
+  color: var(--color-accent);
+}
+
+.manga-table__title-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.manga-table__seasons-row td {
+  padding: 0;
   white-space: normal;
 }
 
@@ -68,6 +124,11 @@
 
 .manga-table tbody tr:hover {
   background: var(--color-surface-border);
+}
+
+.manga-table tbody tr.manga-table__seasons-row,
+.manga-table tbody tr.manga-table__seasons-row:hover {
+  background: transparent;
 }
 
 .manga-table__actions {
