@@ -1,97 +1,63 @@
-import { useMemo, useState } from 'react'
-import { ArrowDown, ArrowUp, ArrowUpDown, Pencil, Plus, Trash2 } from 'lucide-react'
+import { Fragment, useMemo, useState } from 'react'
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronRight, Pencil, Trash2 } from 'lucide-react'
 import type { Manga } from '../../features/mangas/mangasApi'
+import { MangaSeasonsPanel } from '../MangaSeasonsPanel/MangaSeasonsPanel'
 import './MangaTable.css'
 
 interface MangaTableProps {
   mangas: Manga[]
-  incrementingMangaId: string | null
-  onIncrementChapter: (manga: Manga) => void
   onEdit: (manga: Manga) => void
   onDelete: (manga: Manga) => void
 }
 
-type SortKey = 'title' | 'chapters' | 'chaptersEn' | 'status' | 'currentSeason'
 type SortDirection = 'asc' | 'desc'
 
-interface SortConfig {
-  key: SortKey
-  direction: SortDirection
-}
-
-const COLUMNS: { key: SortKey; label: string }[] = [
-  { key: 'title', label: 'Titre' },
-  { key: 'chapters', label: 'Chapitres' },
-  { key: 'chaptersEn', label: 'Chapitres EN' },
-  { key: 'status', label: 'Statut' },
-  { key: 'currentSeason', label: 'Saison' },
-]
-
 /**
- * Compare deux mangas selon la colonne de tri donnée. Les valeurs
- * manquantes (chapitres ou saison inconnus) sont toujours placées en
- * fin de liste, quel que soit le sens du tri.
- * @param a premier manga à comparer
- * @param b second manga à comparer
- * @param key colonne sur laquelle trier
- * @returns un nombre négatif, nul ou positif selon l'ordre relatif de a et b
+ * Affiche la liste des mangas de l'utilisateur, triable par titre.
+ * Chaque ligne peut être dépliée pour révéler ses saisons (nombre de
+ * chapitres, statut et actions propres à chaque saison), gérées par
+ * MangaSeasonsPanel. Le tri est purement visuel et s'applique aux
+ * données reçues en props, sans appel réseau.
  */
-function compareMangas(a: Manga, b: Manga, key: SortKey): number {
-  const valueA = a[key]
-  const valueB = b[key]
-
-  if (valueA == null && valueB == null) {
-    return 0
-  }
-  if (valueA == null) {
-    return 1
-  }
-  if (valueB == null) {
-    return -1
-  }
-  if (typeof valueA === 'number' && typeof valueB === 'number') {
-    return valueA - valueB
-  }
-  return String(valueA).localeCompare(String(valueB), 'fr')
-}
-
-/**
- * Affiche la liste des mangas sous forme de tableau triable (titre,
- * chapitres, chapitres en anglais, statut, saison en cours,
- * commentaire). Le tri est purement visuel et s'applique aux données
- * reçues en props, sans appel réseau.
- */
-export function MangaTable({
-  mangas,
-  incrementingMangaId,
-  onIncrementChapter,
-  onEdit,
-  onDelete,
-}: MangaTableProps) {
-  const [sortConfig, setSortConfig] = useState<SortConfig | null>(null)
+export function MangaTable({ mangas, onEdit, onDelete }: MangaTableProps) {
+  const [sortDirection, setSortDirection] = useState<SortDirection | null>(null)
+  const [expandedMangaIds, setExpandedMangaIds] = useState<Set<string>>(new Set())
 
   const sortedMangas = useMemo(() => {
-    if (!sortConfig) {
+    if (!sortDirection) {
       return mangas
     }
 
-    const sorted = [...mangas].sort((a, b) => compareMangas(a, b, sortConfig.key))
+    const sorted = [...mangas].sort((a, b) => a.title.localeCompare(b.title, 'fr'))
 
-    return sortConfig.direction === 'asc' ? sorted : sorted.reverse()
-  }, [mangas, sortConfig])
+    return sortDirection === 'asc' ? sorted : sorted.reverse()
+  }, [mangas, sortDirection])
 
   /**
-   * Active le tri sur la colonne cliquée, ou inverse son sens si elle
-   * est déjà la colonne de tri active.
-   * @param key colonne sur laquelle l'utilisateur vient de cliquer
+   * Active le tri par titre, ou inverse son sens s'il est déjà actif.
    * @returns rien, la fonction agit uniquement par effet de bord (état de tri)
    */
-  function handleSort(key: SortKey) {
-    setSortConfig((previous) => {
-      if (previous?.key !== key) {
-        return { key, direction: 'asc' }
+  function handleSort() {
+    setSortDirection((previous) => (previous === 'asc' ? 'desc' : 'asc'))
+  }
+
+  /**
+   * Déplie ou replie la ligne d'un manga pour afficher ou masquer ses
+   * saisons.
+   * @param mangaId identifiant du manga dont la ligne vient d'être cliquée
+   * @returns rien, la fonction agit uniquement par effet de bord (état d'affichage)
+   */
+  function toggleExpanded(mangaId: string) {
+    setExpandedMangaIds((previous) => {
+      const next = new Set(previous)
+
+      if (next.has(mangaId)) {
+        next.delete(mangaId)
+      } else {
+        next.add(mangaId)
       }
-      return { key, direction: previous.direction === 'asc' ? 'desc' : 'asc' }
+
+      return next
     })
   }
 
@@ -100,79 +66,90 @@ export function MangaTable({
       <table className="manga-table">
         <thead>
           <tr>
-            {COLUMNS.map((column) => {
-              const isActive = sortConfig?.key === column.key
-
-              return (
-                <th
-                  key={column.key}
-                  aria-sort={
-                    isActive ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'
-                  }
-                >
-                  <button
-                    type="button"
-                    className="manga-table__sort-button"
-                    onClick={() => handleSort(column.key)}
-                  >
-                    {column.label}
-                    {isActive ? (
-                      sortConfig.direction === 'asc' ? (
-                        <ArrowUp aria-hidden="true" />
-                      ) : (
-                        <ArrowDown aria-hidden="true" />
-                      )
-                    ) : (
-                      <ArrowUpDown aria-hidden="true" className="manga-table__sort-icon--idle" />
-                    )}
-                  </button>
-                </th>
-              )
-            })}
-            <th>Commentaire</th>
+            <th className="manga-table__col-toggle" aria-hidden="true" />
+            <th
+              aria-sort={
+                sortDirection ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'
+              }
+            >
+              <button type="button" className="manga-table__sort-button" onClick={handleSort}>
+                Titre
+                {sortDirection ? (
+                  sortDirection === 'asc' ? (
+                    <ArrowUp aria-hidden="true" />
+                  ) : (
+                    <ArrowDown aria-hidden="true" />
+                  )
+                ) : (
+                  <ArrowUpDown aria-hidden="true" className="manga-table__sort-icon--idle" />
+                )}
+              </button>
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {sortedMangas.map((manga) => (
-            <tr key={manga.id}>
-              <td>{manga.title}</td>
-              <td>{manga.chapters ?? '-'}</td>
-              <td>{manga.chaptersEn ?? '-'}</td>
-              <td>{manga.status}</td>
-              <td>{manga.currentSeason ?? '-'}</td>
-              <td className="manga-table__cell--comment">{manga.comment ?? ''}</td>
-              <td>
-                <div className="manga-table__actions">
-                  <button
-                    type="button"
-                    className="manga-table__action"
-                    aria-label={`Ajouter un chapitre à ${manga.title}`}
-                    disabled={incrementingMangaId === manga.id}
-                    onClick={() => onIncrementChapter(manga)}
-                  >
-                    <Plus aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className="manga-table__action"
-                    aria-label={`Modifier ${manga.title}`}
-                    onClick={() => onEdit(manga)}
-                  >
-                    <Pencil aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className="manga-table__action manga-table__action--danger"
-                    aria-label={`Supprimer ${manga.title}`}
-                    onClick={() => onDelete(manga)}
-                  >
-                    <Trash2 aria-hidden="true" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+          {sortedMangas.map((manga) => {
+            const isExpanded = expandedMangaIds.has(manga.id)
+
+            return (
+              <Fragment key={manga.id}>
+                <tr>
+                  <td className="manga-table__col-toggle">
+                    <button
+                      type="button"
+                      className="manga-table__toggle"
+                      aria-label={isExpanded ? `Replier ${manga.title}` : `Déplier ${manga.title}`}
+                      aria-expanded={isExpanded}
+                      onClick={() => toggleExpanded(manga.id)}
+                    >
+                      {isExpanded ? (
+                        <ChevronDown aria-hidden="true" />
+                      ) : (
+                        <ChevronRight aria-hidden="true" />
+                      )}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="manga-table__title-button"
+                      onClick={() => toggleExpanded(manga.id)}
+                    >
+                      {manga.title}
+                    </button>
+                  </td>
+                  <td>
+                    <div className="manga-table__actions">
+                      <button
+                        type="button"
+                        className="manga-table__action"
+                        aria-label={`Modifier ${manga.title}`}
+                        onClick={() => onEdit(manga)}
+                      >
+                        <Pencil aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        className="manga-table__action manga-table__action--danger"
+                        aria-label={`Supprimer ${manga.title}`}
+                        onClick={() => onDelete(manga)}
+                      >
+                        <Trash2 aria-hidden="true" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {isExpanded && (
+                  <tr className="manga-table__seasons-row">
+                    <td colSpan={3}>
+                      <MangaSeasonsPanel mangaId={manga.id} />
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            )
+          })}
         </tbody>
       </table>
     </div>

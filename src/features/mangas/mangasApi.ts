@@ -1,15 +1,8 @@
 import { supabase } from '../../lib/supabaseClient'
 
-export type MangaStatus = 'En cours' | 'Terminé' | 'En pause'
-
 export interface Manga {
   id: string
   title: string
-  chapters: number | null
-  chaptersEn: number | null
-  status: MangaStatus
-  currentSeason: number | null
-  comment: string | null
 }
 
 export interface FetchMangasResult {
@@ -19,11 +12,6 @@ export interface FetchMangasResult {
 
 export interface MangaInput {
   title: string
-  chapters: number | null
-  chaptersEn: number | null
-  status: MangaStatus
-  currentSeason: number | null
-  comment: string | null
 }
 
 export interface MangaMutationResult {
@@ -32,15 +20,17 @@ export interface MangaMutationResult {
 
 /**
  * Récupère la liste des mangas de l'utilisateur connecté, triée par
- * titre. Le filtrage par utilisateur est assuré par les policies Row
- * Level Security de la table manga_list, aucun filtre manuel n'est
+ * titre. Le nombre de chapitres, le statut et la saison sont désormais
+ * portés par les saisons de chaque manga (voir mangaSeasonsApi). Le
+ * filtrage par utilisateur est assuré par les policies Row Level
+ * Security de la table manga_list, aucun filtre manuel n'est
  * nécessaire ici.
  * @returns la liste des mangas, et un message d'erreur si la récupération a échoué
  */
 export async function fetchMangas(): Promise<FetchMangasResult> {
   const { data, error } = await supabase
     .from('manga_list')
-    .select('id, title, chapters, chapters_en, status, current_season, comment')
+    .select('id, title')
     .order('title', { ascending: true })
 
   if (error) {
@@ -50,11 +40,6 @@ export async function fetchMangas(): Promise<FetchMangasResult> {
   const mangas: Manga[] = (data ?? []).map((row) => ({
     id: row.id,
     title: row.title,
-    chapters: row.chapters,
-    chaptersEn: row.chapters_en,
-    status: row.status,
-    currentSeason: row.current_season,
-    comment: row.comment,
   }))
 
   return { mangas, error: null }
@@ -62,7 +47,7 @@ export async function fetchMangas(): Promise<FetchMangasResult> {
 
 /**
  * Crée un nouveau manga pour l'utilisateur actuellement connecté.
- * @param input valeurs saisies dans le formulaire (titre, chapitres, chapitres en anglais, statut, saison, commentaire)
+ * @param input valeurs saisies dans le formulaire (titre)
  * @returns un message d'erreur si la création a échoué, ou null si elle a réussi
  */
 export async function createManga(input: MangaInput): Promise<MangaMutationResult> {
@@ -75,19 +60,13 @@ export async function createManga(input: MangaInput): Promise<MangaMutationResul
   const { error } = await supabase.from('manga_list').insert({
     user_id: userData.user.id,
     title: input.title,
-    chapters: input.chapters,
-    chapters_en: input.chaptersEn,
-    status: input.status,
-    current_season: input.currentSeason,
-    comment: input.comment,
   })
 
   return { error: error ? error.message : null }
 }
 
 /**
- * Met à jour un manga existant. Seuls les champs présents dans
- * partialInput sont modifiés, les autres restent inchangés.
+ * Met à jour le titre d'un manga existant.
  * @param id identifiant du manga à modifier
  * @param partialInput champs à mettre à jour
  * @returns un message d'erreur si la mise à jour a échoué, ou null si elle a réussi
@@ -101,21 +80,6 @@ export async function updateManga(
   if (partialInput.title !== undefined) {
     payload.title = partialInput.title
   }
-  if (partialInput.chapters !== undefined) {
-    payload.chapters = partialInput.chapters
-  }
-  if (partialInput.chaptersEn !== undefined) {
-    payload.chapters_en = partialInput.chaptersEn
-  }
-  if (partialInput.status !== undefined) {
-    payload.status = partialInput.status
-  }
-  if (partialInput.currentSeason !== undefined) {
-    payload.current_season = partialInput.currentSeason
-  }
-  if (partialInput.comment !== undefined) {
-    payload.comment = partialInput.comment
-  }
 
   const { error } = await supabase.from('manga_list').update(payload).eq('id', id)
 
@@ -123,7 +87,8 @@ export async function updateManga(
 }
 
 /**
- * Supprime définitivement un manga.
+ * Supprime définitivement un manga, ainsi que toutes ses saisons
+ * (suppression en cascade gérée par la base de données).
  * @param id identifiant du manga à supprimer
  * @returns un message d'erreur si la suppression a échoué, ou null si elle a réussi
  */
