@@ -5,6 +5,29 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.2.0]
+
+### Ajouté
+
+- Scripts SQL `assembly/007_create_anime_season_list_table.sql` et `assembly/008_create_manga_season_list_table.sql` (tables `anime_season_list` et `manga_season_list`)
+- Script SQL `assembly/009_migrate_existing_seasons_data.sql` : reprend les données existantes (numéro de saison, épisodes/chapitres, statut) dans une saison unique pour chaque anime/manga
+- Script SQL `assembly/010_drop_old_anime_manga_columns.sql` : supprime les colonnes désormais portées par les saisons (`episodes`, `chapters`, `chapters_en`, `status`, `current_season`, `comment`)
+- Script SQL `assembly/011_anime_manga_season_label.sql` : remplace le numéro de saison (entier) par un libellé libre (texte), pour pouvoir nommer une entrée "Film", "OAV", etc. et pas seulement "Saison X"
+- Chaque ligne du tableau Animes/Mangas est désormais dépliable pour afficher ses saisons, chacune avec son propre nom, son propre nombre d'épisodes/chapitres, son propre statut et ses propres actions (ajout, modification, suppression, incrémentation rapide)
+- Composants `AnimeSeasonsPanel`/`MangaSeasonsPanel` et `AnimeSeasonForm`/`MangaSeasonForm`
+- Documentation des tests manuels pour la fonctionnalité de saisons (`TESTS_MANUELS_saisons.md`)
+
+### Modifié
+
+- Les animes et mangas ne portent plus qu'un titre : le nombre d'épisodes/chapitres, le statut et la saison en cours sont désormais gérés au niveau de chaque saison
+- `AnimeForm`/`MangaForm` simplifiés pour ne plus gérer que le titre
+- Le nom d'une saison n'est plus un simple numéro auto-incrémenté mais un texte libre modifiable ("Saison 2", "Film", "OAV"...)
+
+### Supprimé
+
+- Champ "Commentaire" au niveau de l'anime/du manga (retiré, non repris au niveau des saisons)
+- Champ "Chapitres en anglais" du manga (n'a pas d'équivalent dans le nouveau modèle par saison)
+
 ## [1.1.0] - 2026-08-19
 
 ### Ajouté
