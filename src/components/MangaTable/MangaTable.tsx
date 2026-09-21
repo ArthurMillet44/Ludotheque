@@ -6,20 +6,32 @@ import './MangaTable.css'
 
 interface MangaTableProps {
   mangas: Manga[]
+  /**
+   * Nombre total de chapitres par manga (toutes saisons confondues), indexé
+   * par identifiant de manga. Calculé côté frontend, jamais stocké en base.
+   */
+  chapterTotals: Record<string, number>
   onEdit: (manga: Manga) => void
   onDelete: (manga: Manga) => void
+  /**
+   * Appelé lorsqu'une saison a été ajoutée, modifiée, supprimée ou
+   * incrémentée dans un panneau déplié, pour recalculer chapterTotals.
+   */
+  onSeasonsChanged: () => void
 }
 
 type SortDirection = 'asc' | 'desc'
 
 /**
- * Affiche la liste des mangas de l'utilisateur, triable par titre.
- * Chaque ligne peut être dépliée pour révéler ses saisons (nombre de
- * chapitres, statut et actions propres à chaque saison), gérées par
- * MangaSeasonsPanel. Le tri est purement visuel et s'applique aux
- * données reçues en props, sans appel réseau.
+ * Affiche la liste des mangas de l'utilisateur, triable par titre. Le
+ * nombre total de chapitres (toutes saisons confondues, calculé côté
+ * frontend via chapterTotals) est affiché à côté du titre. Chaque ligne
+ * peut être dépliée pour révéler ses saisons (nombre de chapitres, statut
+ * et actions propres à chaque saison), gérées par MangaSeasonsPanel. Le
+ * tri est purement visuel et s'applique aux données reçues en props, sans
+ * appel réseau.
  */
-export function MangaTable({ mangas, onEdit, onDelete }: MangaTableProps) {
+export function MangaTable({ mangas, chapterTotals, onEdit, onDelete, onSeasonsChanged }: MangaTableProps) {
   const [sortDirection, setSortDirection] = useState<SortDirection | null>(null)
   const [expandedMangaIds, setExpandedMangaIds] = useState<Set<string>>(new Set())
 
@@ -118,6 +130,9 @@ export function MangaTable({ mangas, onEdit, onDelete }: MangaTableProps) {
                     >
                       {manga.title}
                     </button>
+                    <span className="manga-table__chapter-total">
+                      {chapterTotals[manga.id] ?? 0} chapitre{(chapterTotals[manga.id] ?? 0) > 1 ? 's' : ''}
+                    </span>
                   </td>
                   <td>
                     <div className="manga-table__actions">
@@ -143,7 +158,7 @@ export function MangaTable({ mangas, onEdit, onDelete }: MangaTableProps) {
                 {isExpanded && (
                   <tr className="manga-table__seasons-row">
                     <td colSpan={3}>
-                      <MangaSeasonsPanel mangaId={manga.id} />
+                      <MangaSeasonsPanel mangaId={manga.id} onSeasonsChanged={onSeasonsChanged} />
                     </td>
                   </tr>
                 )}

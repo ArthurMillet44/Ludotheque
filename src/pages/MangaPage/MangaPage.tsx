@@ -16,6 +16,7 @@ import {
   type Manga,
   type MangaInput,
 } from '../../features/mangas/mangasApi'
+import { fetchMangaChapterTotals } from '../../features/mangas/mangaSeasonsApi'
 import './MangaPage.css'
 
 type FormState = { mode: 'create' } | { mode: 'edit'; manga: Manga } | null
@@ -26,7 +27,9 @@ type FormState = { mode: 'create' } | { mode: 'edit'; manga: Manga } | null
  * titre, et propose la création, la modification et la suppression
  * d'un manga. Le nombre de chapitres, le statut et les actions liées
  * sont gérés saison par saison en dépliant une ligne du tableau (voir
- * MangaTable et MangaSeasonsPanel).
+ * MangaTable et MangaSeasonsPanel). Le nombre total de chapitres affiché à
+ * côté de chaque titre (chapterTotals) est recalculé à la volée depuis les
+ * saisons existantes, jamais stocké en base.
  */
 export function MangaPage() {
   const [mangas, setMangas] = useState<Manga[]>([])
@@ -40,6 +43,8 @@ export function MangaPage() {
 
   const [mangaToDelete, setMangaToDelete] = useState<Manga | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const [chapterTotals, setChapterTotals] = useState<Record<string, number>>({})
 
   /**
    * Recharge la liste des mangas depuis Supabase et met à jour l'état
@@ -59,8 +64,23 @@ export function MangaPage() {
     setIsLoading(false)
   }
 
+  /**
+   * Recalcule le nombre total de chapitres par manga (toutes saisons
+   * confondues) depuis Supabase. Cette somme n'est jamais stockée en base,
+   * juste recalculée à la volée à chaque appel.
+   * @returns rien, la fonction agit uniquement par effet de bord (état de la page)
+   */
+  async function refreshChapterTotals() {
+    const { totals, error } = await fetchMangaChapterTotals()
+
+    if (!error) {
+      setChapterTotals(totals)
+    }
+  }
+
   useEffect(() => {
     refreshMangas()
+    refreshChapterTotals()
   }, [])
 
   const filteredMangas = useMemo(
@@ -162,8 +182,10 @@ export function MangaPage() {
         {!isLoading && !errorMessage && filteredMangas.length > 0 && (
           <MangaTable
             mangas={filteredMangas}
+            chapterTotals={chapterTotals}
             onEdit={(manga) => setFormState({ mode: 'edit', manga })}
             onDelete={(manga) => setMangaToDelete(manga)}
+            onSeasonsChanged={refreshChapterTotals}
           />
         )}
       </main>

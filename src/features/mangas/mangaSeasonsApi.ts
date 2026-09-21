@@ -25,6 +25,12 @@ export interface MangaSeasonMutationResult {
   error: string | null
 }
 
+export interface FetchMangaChapterTotalsResult {
+  /** Nombre total de chapitres par manga (somme de toutes ses saisons), indexé par manga_list_id. */
+  totals: Record<string, number>
+  error: string | null
+}
+
 /**
  * Récupère les saisons d'un manga donné, triées par ordre de création (le
  * libellé étant un texte libre, un tri alphabétique n'aurait pas de sens :
@@ -120,6 +126,30 @@ export async function deleteMangaSeason(id: string): Promise<MangaSeasonMutation
   const { error } = await supabase.from('manga_season_list').delete().eq('id', id)
 
   return { error: error ? error.message : null }
+}
+
+/**
+ * Calcule, pour chaque manga de l'utilisateur connecté, le nombre total de
+ * chapitres toutes saisons confondues. Cette somme n'est jamais stockée en
+ * base : elle est recalculée à la volée à partir des saisons existantes, en
+ * une seule requête plutôt qu'une par manga. Le filtrage par utilisateur est
+ * assuré par les policies Row Level Security de la table manga_season_list.
+ * @returns le total de chapitres par manga (manga_list_id -> total), et un message d'erreur si la récupération a échoué
+ */
+export async function fetchMangaChapterTotals(): Promise<FetchMangaChapterTotalsResult> {
+  const { data, error } = await supabase.from('manga_season_list').select('manga_list_id, chapters')
+
+  if (error) {
+    return { totals: {}, error: error.message }
+  }
+
+  const totals: Record<string, number> = {}
+
+  for (const row of data ?? []) {
+    totals[row.manga_list_id] = (totals[row.manga_list_id] ?? 0) + (row.chapters ?? 0)
+  }
+
+  return { totals, error: null }
 }
 
 /**

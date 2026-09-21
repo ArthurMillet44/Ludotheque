@@ -6,20 +6,32 @@ import './AnimeTable.css'
 
 interface AnimeTableProps {
   animes: Anime[]
+  /**
+   * Nombre total d'épisodes par anime (toutes saisons confondues), indexé
+   * par identifiant d'anime. Calculé côté frontend, jamais stocké en base.
+   */
+  episodeTotals: Record<string, number>
   onEdit: (anime: Anime) => void
   onDelete: (anime: Anime) => void
+  /**
+   * Appelé lorsqu'une saison a été ajoutée, modifiée, supprimée ou
+   * incrémentée dans un panneau déplié, pour recalculer episodeTotals.
+   */
+  onSeasonsChanged: () => void
 }
 
 type SortDirection = 'asc' | 'desc'
 
 /**
- * Affiche la liste des animes de l'utilisateur, triable par titre.
- * Chaque ligne peut être dépliée pour révéler ses saisons (nombre
- * d'épisodes, statut et actions propres à chaque saison), gérées par
- * AnimeSeasonsPanel. Le tri est purement visuel et s'applique aux
- * données reçues en props, sans appel réseau.
+ * Affiche la liste des animes de l'utilisateur, triable par titre. Le
+ * nombre total d'épisodes (toutes saisons confondues, calculé côté
+ * frontend via episodeTotals) est affiché à côté du titre. Chaque ligne
+ * peut être dépliée pour révéler ses saisons (nombre d'épisodes, statut et
+ * actions propres à chaque saison), gérées par AnimeSeasonsPanel. Le tri
+ * est purement visuel et s'applique aux données reçues en props, sans
+ * appel réseau.
  */
-export function AnimeTable({ animes, onEdit, onDelete }: AnimeTableProps) {
+export function AnimeTable({ animes, episodeTotals, onEdit, onDelete, onSeasonsChanged }: AnimeTableProps) {
   const [sortDirection, setSortDirection] = useState<SortDirection | null>(null)
   const [expandedAnimeIds, setExpandedAnimeIds] = useState<Set<string>>(new Set())
 
@@ -118,6 +130,9 @@ export function AnimeTable({ animes, onEdit, onDelete }: AnimeTableProps) {
                     >
                       {anime.title}
                     </button>
+                    <span className="anime-table__episode-total">
+                      {episodeTotals[anime.id] ?? 0} épisode{(episodeTotals[anime.id] ?? 0) > 1 ? 's' : ''}
+                    </span>
                   </td>
                   <td>
                     <div className="anime-table__actions">
@@ -143,7 +158,7 @@ export function AnimeTable({ animes, onEdit, onDelete }: AnimeTableProps) {
                 {isExpanded && (
                   <tr className="anime-table__seasons-row">
                     <td colSpan={3}>
-                      <AnimeSeasonsPanel animeId={anime.id} />
+                      <AnimeSeasonsPanel animeId={anime.id} onSeasonsChanged={onSeasonsChanged} />
                     </td>
                   </tr>
                 )}
