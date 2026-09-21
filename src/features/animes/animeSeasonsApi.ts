@@ -25,6 +25,12 @@ export interface AnimeSeasonMutationResult {
   error: string | null
 }
 
+export interface FetchAnimeEpisodeTotalsResult {
+  /** Nombre total d'épisodes par anime (somme de toutes ses saisons), indexé par anime_list_id. */
+  totals: Record<string, number>
+  error: string | null
+}
+
 /**
  * Récupère les saisons d'un anime donné, triées par ordre de création (le
  * libellé étant un texte libre, un tri alphabétique n'aurait pas de sens :
@@ -120,6 +126,30 @@ export async function deleteAnimeSeason(id: string): Promise<AnimeSeasonMutation
   const { error } = await supabase.from('anime_season_list').delete().eq('id', id)
 
   return { error: error ? error.message : null }
+}
+
+/**
+ * Calcule, pour chaque anime de l'utilisateur connecté, le nombre total
+ * d'épisodes toutes saisons confondues. Cette somme n'est jamais stockée en
+ * base : elle est recalculée à la volée à partir des saisons existantes, en
+ * une seule requête plutôt qu'une par anime. Le filtrage par utilisateur est
+ * assuré par les policies Row Level Security de la table anime_season_list.
+ * @returns le total d'épisodes par anime (anime_list_id -> total), et un message d'erreur si la récupération a échoué
+ */
+export async function fetchAnimeEpisodeTotals(): Promise<FetchAnimeEpisodeTotalsResult> {
+  const { data, error } = await supabase.from('anime_season_list').select('anime_list_id, episodes')
+
+  if (error) {
+    return { totals: {}, error: error.message }
+  }
+
+  const totals: Record<string, number> = {}
+
+  for (const row of data ?? []) {
+    totals[row.anime_list_id] = (totals[row.anime_list_id] ?? 0) + (row.episodes ?? 0)
+  }
+
+  return { totals, error: null }
 }
 
 /**

@@ -16,6 +16,7 @@ import {
   type Anime,
   type AnimeInput,
 } from '../../features/animes/animesApi'
+import { fetchAnimeEpisodeTotals } from '../../features/animes/animeSeasonsApi'
 import './AnimesPage.css'
 
 type FormState = { mode: 'create' } | { mode: 'edit'; anime: Anime } | null
@@ -26,7 +27,9 @@ type FormState = { mode: 'create' } | { mode: 'edit'; anime: Anime } | null
  * titre, et propose la création, la modification et la suppression
  * d'un anime. Le nombre d'épisodes, le statut et les actions liées
  * sont gérés saison par saison en dépliant une ligne du tableau (voir
- * AnimeTable et AnimeSeasonsPanel).
+ * AnimeTable et AnimeSeasonsPanel). Le nombre total d'épisodes affiché à
+ * côté de chaque titre (episodeTotals) est recalculé à la volée depuis les
+ * saisons existantes, jamais stocké en base.
  */
 export function AnimesPage() {
   const [animes, setAnimes] = useState<Anime[]>([])
@@ -40,6 +43,8 @@ export function AnimesPage() {
 
   const [animeToDelete, setAnimeToDelete] = useState<Anime | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const [episodeTotals, setEpisodeTotals] = useState<Record<string, number>>({})
 
   /**
    * Recharge la liste des animes depuis Supabase et met à jour l'état
@@ -59,8 +64,23 @@ export function AnimesPage() {
     setIsLoading(false)
   }
 
+  /**
+   * Recalcule le nombre total d'épisodes par anime (toutes saisons
+   * confondues) depuis Supabase. Cette somme n'est jamais stockée en base,
+   * juste recalculée à la volée à chaque appel.
+   * @returns rien, la fonction agit uniquement par effet de bord (état de la page)
+   */
+  async function refreshEpisodeTotals() {
+    const { totals, error } = await fetchAnimeEpisodeTotals()
+
+    if (!error) {
+      setEpisodeTotals(totals)
+    }
+  }
+
   useEffect(() => {
     refreshAnimes()
+    refreshEpisodeTotals()
   }, [])
 
   const filteredAnimes = useMemo(
@@ -162,8 +182,10 @@ export function AnimesPage() {
         {!isLoading && !errorMessage && filteredAnimes.length > 0 && (
           <AnimeTable
             animes={filteredAnimes}
+            episodeTotals={episodeTotals}
             onEdit={(anime) => setFormState({ mode: 'edit', anime })}
             onDelete={(anime) => setAnimeToDelete(anime)}
+            onSeasonsChanged={refreshEpisodeTotals}
           />
         )}
       </main>
