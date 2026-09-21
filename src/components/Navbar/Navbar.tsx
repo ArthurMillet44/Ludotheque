@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { to: '/mangas', label: 'Mangas' },
   { to: '/pokemon', label: 'Pokémon' },
   { to: '/skyrim', label: 'Skyrim' },
+  { to: '/minecraft', label: 'Minecraft' },
 ]
 
 /**
