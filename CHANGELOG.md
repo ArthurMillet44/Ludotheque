@@ -5,6 +5,12 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.3.1]
+
+### Ajouté
+
+- Nombre total d'épisodes (Animes) ou de chapitres (Mangas), toutes saisons confondues, affiché à côté du titre dans le tableau : recalculé à la volée à partir des saisons existantes, jamais stocké en base
+
 ## [1.3.0]
 
 ### Ajouté
