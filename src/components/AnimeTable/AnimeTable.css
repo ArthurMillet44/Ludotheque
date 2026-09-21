@@ -73,6 +73,13 @@
   outline-offset: 2px;
 }
 
+.anime-table__episode-total {
+  margin-left: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 .anime-table__seasons-row td {
   padding: 0;
   white-space: normal;
