@@ -1,0 +1,19 @@
+.minecraft-item-icon {
+  display: block;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.minecraft-item-icon--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-tab-track);
+  color: var(--color-text-muted);
+}
+
+.minecraft-item-icon--fallback svg {
+  width: 60%;
+  height: 60%;
+}
