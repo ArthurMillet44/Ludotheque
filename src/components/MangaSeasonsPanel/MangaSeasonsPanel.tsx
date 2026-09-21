@@ -17,6 +17,12 @@ import './MangaSeasonsPanel.css'
 
 interface MangaSeasonsPanelProps {
   mangaId: string
+  /**
+   * Appelé après tout ajout, modification, suppression ou incrémentation
+   * d'une saison, pour permettre au composant parent de recalculer le total
+   * de chapitres affiché à côté du titre du manga.
+   */
+  onSeasonsChanged?: () => void
 }
 
 type FormState = { mode: 'create' } | { mode: 'edit'; season: MangaSeason } | null
@@ -27,9 +33,11 @@ type FormState = { mode: 'create' } | { mode: 'edit'; season: MangaSeason } | nu
  * d'en ajouter, d'en modifier ou d'en supprimer, chaque saison portant
  * son propre libellé (texte libre : "Saison 2", "Tome hors-série"...),
  * son propre nombre de chapitres, son propre statut et ses propres
- * actions.
+ * actions. Signale au composant parent (via onSeasonsChanged) chaque
+ * changement affectant le nombre de chapitres, pour que le total affiché à
+ * côté du titre du manga reste à jour.
  */
-export function MangaSeasonsPanel({ mangaId }: MangaSeasonsPanelProps) {
+export function MangaSeasonsPanel({ mangaId, onSeasonsChanged }: MangaSeasonsPanelProps) {
   const [seasons, setSeasons] = useState<MangaSeason[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -94,6 +102,7 @@ export function MangaSeasonsPanel({ mangaId }: MangaSeasonsPanelProps) {
 
     setFormState(null)
     await refreshSeasons()
+    onSeasonsChanged?.()
   }
 
   /**
@@ -119,6 +128,7 @@ export function MangaSeasonsPanel({ mangaId }: MangaSeasonsPanelProps) {
 
     setSeasonToDelete(null)
     await refreshSeasons()
+    onSeasonsChanged?.()
   }
 
   /**
@@ -140,6 +150,7 @@ export function MangaSeasonsPanel({ mangaId }: MangaSeasonsPanelProps) {
     }
 
     await refreshSeasons()
+    onSeasonsChanged?.()
   }
 
   return (

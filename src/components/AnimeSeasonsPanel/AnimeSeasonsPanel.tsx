@@ -17,6 +17,12 @@ import './AnimeSeasonsPanel.css'
 
 interface AnimeSeasonsPanelProps {
   animeId: string
+  /**
+   * Appelé après tout ajout, modification, suppression ou incrémentation
+   * d'une saison, pour permettre au composant parent de recalculer le total
+   * d'épisodes affiché à côté du titre de l'anime.
+   */
+  onSeasonsChanged?: () => void
 }
 
 type FormState = { mode: 'create' } | { mode: 'edit'; season: AnimeSeason } | null
@@ -27,8 +33,11 @@ type FormState = { mode: 'create' } | { mode: 'edit'; season: AnimeSeason } | nu
  * d'en ajouter, d'en modifier ou d'en supprimer, chaque saison portant
  * son propre libellé (texte libre : "Saison 2", "Film", "OAV"...), son
  * propre nombre d'épisodes, son propre statut et ses propres actions.
+ * Signale au composant parent (via onSeasonsChanged) chaque changement
+ * affectant le nombre d'épisodes, pour que le total affiché à côté du titre
+ * de l'anime reste à jour.
  */
-export function AnimeSeasonsPanel({ animeId }: AnimeSeasonsPanelProps) {
+export function AnimeSeasonsPanel({ animeId, onSeasonsChanged }: AnimeSeasonsPanelProps) {
   const [seasons, setSeasons] = useState<AnimeSeason[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -93,6 +102,7 @@ export function AnimeSeasonsPanel({ animeId }: AnimeSeasonsPanelProps) {
 
     setFormState(null)
     await refreshSeasons()
+    onSeasonsChanged?.()
   }
 
   /**
@@ -118,6 +128,7 @@ export function AnimeSeasonsPanel({ animeId }: AnimeSeasonsPanelProps) {
 
     setSeasonToDelete(null)
     await refreshSeasons()
+    onSeasonsChanged?.()
   }
 
   /**
@@ -139,6 +150,7 @@ export function AnimeSeasonsPanel({ animeId }: AnimeSeasonsPanelProps) {
     }
 
     await refreshSeasons()
+    onSeasonsChanged?.()
   }
 
   return (
