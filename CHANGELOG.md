@@ -5,6 +5,16 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [Non publié]
+
+### Ajouté
+
+- Script SQL `assembly/012_create_minecraft_tables.sql` (tables `minecraft_game_list` et `minecraft_history_list`) : suivi de parties Minecraft "random" (craft et loots randomisés), avec historique en arbre (sous-entrées), items d'entrée/sortie multiples pour les blocs cassés, indice de recette pour lever l'ambiguïté sur craft/pierre à tailler, et catégorie optionnelle (Armure, Outil, Potion, Nourriture, Bloc, Autre) par chaîne
+- Page Minecraft (`/minecraft`), lien "Minecraft" dans la `Navbar` : parties affichées sous forme de cartes
+- Page de détail d'une partie Minecraft (`/minecraft/:id`) : historique en arbre des correspondances "item(s) A donne(nt) item(s) B", pour les trois situations bloc cassé, craft et pierre à tailler, chaque chaîne de premier niveau étant repliable (repliée par défaut) et filtrable par catégorie
+- Liste statique des items Minecraft (`src/data/minecraftItems.json`, générée depuis PrismarineJS/minecraft-data version 26.1, complétée par les 75 potions nommées par effet issues du fichier de langue officiel du jeu) et composant `MinecraftItemPicker` pour choisir un item par autocomplétion
+- Composant `MinecraftItemIcon` affichant l'icône d'un item via le CDN InventivetalentDev/minecraft-assets (jsDelivr), avec repli automatique entre les dossiers de textures "item" et "block" (et vers l'icône générique de fiole pour les potions nommées par effet, qui n'ont pas de texture distincte dans le jeu)
+
 ## [1.2.0]
 
 ### Ajouté
