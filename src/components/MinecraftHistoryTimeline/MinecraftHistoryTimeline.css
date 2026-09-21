@@ -1,0 +1,212 @@
+.minecraft-history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.minecraft-history-timeline__node {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.minecraft-history-timeline__children {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-surface-border);
+  list-style: none;
+}
+
+.minecraft-history-timeline__entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.minecraft-history-timeline__root-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.minecraft-history-timeline__root-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.minecraft-history-timeline__root-toggle:hover {
+  color: var(--color-text-primary);
+  background: var(--color-tab-track);
+}
+
+.minecraft-history-timeline__root-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.minecraft-history-timeline__collapsed-results {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.minecraft-history-timeline__collapsed-result {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.minecraft-history-timeline__item-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.minecraft-history-timeline__item-separator {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.minecraft-history-timeline__type-badge {
+  flex: 0 0 auto;
+  padding: 2px var(--space-2);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.minecraft-history-timeline__category-badge {
+  flex: 0 0 auto;
+  padding: 2px var(--space-2);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.minecraft-history-timeline__recipe-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+  padding: 2px var(--space-2);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.minecraft-history-timeline__chain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.minecraft-history-timeline__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.minecraft-history-timeline__item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.minecraft-history-timeline__arrow {
+  flex-shrink: 0;
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.minecraft-history-timeline__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.minecraft-history-timeline__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.minecraft-history-timeline__action svg {
+  width: 16px;
+  height: 16px;
+}
+
+.minecraft-history-timeline__action:hover {
+  color: var(--color-text-primary);
+  background: var(--color-tab-track);
+}
+
+.minecraft-history-timeline__action:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.minecraft-history-timeline__action--danger:hover {
+  color: var(--color-error);
+}
+
+@media (max-width: 560px) {
+  .minecraft-history-timeline__entry {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .minecraft-history-timeline__actions {
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,54 @@
+.minecraft-history-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.minecraft-history-form__parent-hint {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-tab-track);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.minecraft-history-form__error {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-error);
+}
+
+.minecraft-history-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.minecraft-history-form__cancel {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.minecraft-history-form__cancel:hover {
+  border-color: var(--color-text-secondary);
+}
+
+.minecraft-history-form__cancel:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.minecraft-history-form__submit {
+  width: auto;
+}
